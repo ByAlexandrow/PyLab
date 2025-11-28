@@ -1,3 +1,12 @@
 from django.contrib import admin
 
-# Register your models here.
+from topics.models import Topic, Chapter
+
+@admin.register(Topic)
+class TopicAdmin(admin.ModelAdmin):
+    ...
+
+
+@admin.register(Chapter)
+class ChapterAdmin(admin.ModelAdmin):
+    ...
