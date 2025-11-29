@@ -1,28 +1,12 @@
 from django.db import models
 
+from chapters.mixins import BaseModelMixin, OrderingMixin
 
-class Chapter(models.Model):
-    title = models.CharField(
-        max_length=30,
-        null=False,
-        verbose_name='Title'
-    )
-    description = models.CharField(
-        max_length=100,
-        null=False,
-        verbose_name='Description'
-    )
-    order = models.IntegerField(
-        default=0,
-        verbose_name='Order'
-    )
-    is_published = models.BooleanField(
-        default=True,
-        verbose_name='Published'
-    )
 
-    class Meta:
-        ordering = ['order']
+class Chapter(BaseModelMixin, OrderingMixin, models.Model):
+    """Chapter's model."""
+
+    class Meta(OrderingMixin.Meta):
         verbose_name = 'Chapter'
         verbose_name_plural = 'Chapters'
     
@@ -30,17 +14,9 @@ class Chapter(models.Model):
         return f'{self.title} - {self.order} - {self.is_published}'
 
 
-class Topic(models.Model):
-    title = models.CharField(
-        max_length=30,
-        null=False,
-        verbose_name='Title'
-    )
-    description = models.CharField(
-        max_length=100,
-        null=False,
-        verbose_name='Description'
-    )
+class Topic(BaseModelMixin, OrderingMixin, models.Model):
+    """Topic's model."""
+
     chapter = models.ForeignKey(
         Chapter,
         on_delete=models.CASCADE,
@@ -48,17 +24,8 @@ class Topic(models.Model):
         verbose_name='Topics'
     )
     content = models.TextField()
-    order = models.IntegerField(
-        default=0,
-        verbose_name='Order'
-    )
-    is_published = models.BooleanField(
-        default=True,
-        verbose_name='Published'
-    )
 
-    class Meta:
-        ordering = ['order']
+    class Meta(OrderingMixin.Meta):
         verbose_name = 'Topic'
         verbose_name_plural = 'Topics'
     
