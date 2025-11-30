@@ -2,6 +2,8 @@ from django.db import models
 
 from chapters.mixins import BaseModelMixin, OrderingMixin
 
+from tinymce.models import HTMLField
+
 
 class Chapter(BaseModelMixin, OrderingMixin, models.Model):
     """Chapter's model."""
@@ -23,7 +25,7 @@ class Topic(BaseModelMixin, OrderingMixin, models.Model):
         related_name='topics',
         verbose_name='Topics'
     )
-    content = models.TextField()
+    content = HTMLField()
 
     class Meta(OrderingMixin.Meta):
         verbose_name = 'Topic'
