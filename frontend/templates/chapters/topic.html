@@ -1,4 +1,125 @@
 {% extends "base.html" %}
-{% block title %} PyLab - Topic {% endblock title %}
+{% block title %}PyLab - {{ topic.title }}{% endblock %}
 {% block content %}
-{% endblock content %}
+<div class="topic-wrapper">
+    <div class="topic-container">
+        <!-- Заголовок темы -->
+        <h1 class="topic-title">{{ topic.title }}</h1>
+        
+        <div class="topic-meta">
+            <span class="topic-chapter">
+                <i class="bi bi-book"></i>
+                Глава: {{ topic.chapter.title }}
+            </span>
+            <span class="topic-order">
+                <i class="bi bi-list-ol"></i>
+                Тема №{{ topic.order }}
+            </span>
+        </div>
+        
+        <!-- Основное содержание -->
+        <div class="topic-content">
+            {% if topic.content %}
+                <div class="topic-body">
+                    {{ topic.content|safe }}
+                </div>
+            {% else %}
+                <div class="topic-empty">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <p>Содержание этой темы пока не добавлено. Мы работаем над этим!</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Практические материалы -->
+        <div class="practical-materials">
+            <h3 class="materials-title">
+                <i class="bi bi-check-circle"></i>
+                Практика для закрепления
+            </h3>
+            
+            <div class="materials-grid">
+                <a href="" class="material-card tests">
+                    <div class="material-icon">
+                        <i class="bi bi-question-circle"></i>
+                    </div>
+                    <div class="material-content">
+                        <h4>Тесты</h4>
+                        <p>Проверьте свои знания по этой теме</p>
+                    </div>
+                    <div class="material-arrow">
+                        <i class="bi bi-arrow-right"></i>
+                    </div>
+                </a>
+                
+                <a href="" class="material-card exercises">
+                    <div class="material-icon">
+                        <i class="bi bi-code-slash"></i>
+                    </div>
+                    <div class="material-content">
+                        <h4>Упражнения</h4>
+                        <p>Практические задания для отработки навыков</p>
+                    </div>
+                    <div class="material-arrow">
+                        <i class="bi bi-arrow-right"></i>
+                    </div>
+                </a>
+                
+                <a href="" class="material-card projects">
+                    <div class="material-icon">
+                        <i class="bi bi-kanban"></i>
+                    </div>
+                    <div class="material-content">
+                        <h4>Проекты</h4>
+                        <p>Реальные проекты для применения знаний</p>
+                    </div>
+                    <div class="material-arrow">
+                        <i class="bi bi-arrow-right"></i>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="back-link">
+                <a href="{% url 'chapters:chapters' %}" class="btn-back">
+                    <i class="bi bi-arrow-left"></i>
+                    Вернуться к списку глав
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Подключаем Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+<script>
+    // Плавная прокрутка внутри контента
+    document.addEventListener('DOMContentLoaded', function() {
+        const topicContent = document.querySelector('.topic-content');
+        
+        // Добавляем тень при скролле
+        topicContent.addEventListener('scroll', function() {
+            if (this.scrollTop > 10) {
+                this.style.boxShadow = 'inset 0 10px 10px -10px rgba(0,0,0,0.1)';
+            } else {
+                this.style.boxShadow = 'none';
+            }
+        });
+        
+        // Анимация появления карточек
+        const cards = document.querySelectorAll('.material-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100 * index);
+        });
+    });
+</script>
+{% endblock %}
