@@ -1,0 +1,65 @@
+header {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(18, 18, 18);
+    padding: 0 2rem;
+    height: 69px;
+    border-bottom: 2px solid limegreen;
+    color: limegreen;
+    z-index: 9999;
+    box-sizing: border-box;
+    border-radius: 0 0 20px 20px;
+}
+/* Логотип слева */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.logo img {
+    height: 40px;
+    width: 40px;
+    object-fit: contain;
+}
+.logo-text {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+/* Центр меню */
+nav {
+    display: flex;
+    gap: 1.6rem;
+    font-size: 1rem;
+}
+nav a {
+    color: limegreen;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+}
+nav a:hover {
+    text-decoration: underline;
+}
+/* Профиль справа */
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+}
+.profile img {
+    height: 35px;
+    width: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.profile a {
+    color: limegreen;
+}

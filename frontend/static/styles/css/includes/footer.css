@@ -1,0 +1,28 @@
+footer {
+    margin: 0 auto;
+    width: 80%;
+    height: auto;
+    background-color: rgba(0, 0, 0, 0);
+    color: limegreen;
+    border-top: 2px solid limegreen;
+    border-radius: 20px 20px 0 0;
+    padding: 1rem 2rem 2rem;
+    box-sizing: border-box;
+    text-align: center;
+}
+footer .social-links {
+    margin-bottom: 1rem;
+}
+footer .social-links a {
+    margin: 0 0.5rem;
+    color: limegreen;
+    text-decoration: none;
+    font-size: 1.2rem;
+}
+footer .social-links a:hover {
+    text-decoration: underline;
+}
+footer .love-text {
+    font-style: italic;
+    font-size: 1rem;
+}

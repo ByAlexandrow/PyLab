@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>{% block title %}PyLab{% endblock %}</title>
+<link rel="stylesheet" href="/static/styles/css/includes/header.css" />
+<link rel="stylesheet" href="/static/styles/css/chapters/chapters.css" />
+<link rel="stylesheet" href="/static/styles/css/includes/footer.css" />
+<link rel="stylesheet" href="/static/styles/css/base.css" />
+<link rel="icon" href="/static/img/favicon/favicon.ico" type="image/x-icon" />
+<link rel="apple-touch-icon" sizes="180x180" href="/static/img/favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/img/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/static/img/favicon/favicon-16x16.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" />
+<script defer src="https://pyscript.net/latest/pyscript.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+</head>
+<body>
+    <div class="grid-background">
+        {% include "includes/header.html" %}
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+        {% include "includes/footer.html" %}
+    </div>
+</body>
+</html>
