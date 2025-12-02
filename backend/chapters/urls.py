@@ -6,5 +6,6 @@ from chapters import views
 app_name = 'chapters'
 
 urlpatterns = [
-    path('chapter/<int:id>/', views.chapter, name='chapter'),
+    path('', views.chapters, name='chapters'),
+    path('topic/<int:id>/', views.topic, name='topic'),
 ]

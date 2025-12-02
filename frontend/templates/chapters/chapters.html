@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block title %} PyLab - Chapters {% endblock title %}
+{% block content %}
+<div class="main-container">
+  <h1 class="section-title">CHAPTERS</h1>
+  <div class="content-wrapper">
+    <!-- Сайдбар с категориями -->
+    <div class="sidebar-container">
+      <nav class="sidebar">
+        <ul id="chapters-list">
+          {% for chapter in chapters %}
+            <li 
+              {% if forloop.first %}class="active"{% endif %} 
+              onclick="selectCategory({{ forloop.counter0 }})"
+              data-chapter-id="{{ chapter.id }}"
+            >
+              {{ chapter.title }}
+            </li>
+          {% empty %}
+            <li>Нет доступных глав</li>
+          {% endfor %}
+        </ul>
+      </nav>
+    </div>
+    <!-- Секция с топиками -->
+    <div class="topics-section">
+      <h2 class="section-title">
+        TOPICS:
+        <span id="current-chapter-title" class="current-chapter">
+          {% if chapters.0 %}{{ chapters.0.title }}{% endif %}
+        </span>
+      </h2>
+      <div class="topics-container" id="topics-container">
+        {% if chapters.0 %}
+          {% for topic in chapters.0.topics.all %}
+            <div class="card" onclick="openTopic({{ topic.id }})">
+              <h3>{{ topic.title }}</h3>
+              <p>{{ topic.description|default:"Изучите эту тему" }}</p>
+            </div>
+          {% empty %}
+            <p>We will add some topics very soon)</p>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Получаем шаблон URL для topic
+  const TOPIC_URL_TEMPLATE = "{% url 'chapters:topic' 9999 %}";
+  // После замены получится что-то вроде: "/chapters/topic/9999/"
+  
+  // Данные из Django context в JavaScript
+  const chaptersData = [
+    {% for chapter in chapters %}
+      {
+        id: {{ chapter.id }},
+        title: "{{ chapter.title|escapejs }}",
+        topics: [
+          {% for topic in chapter.topics.all %}
+            {
+              id: {{ topic.id }},
+              title: "{{ topic.title|escapejs }}",
+              description: "{{ topic.description|escapejs|default:'' }}"
+            }{% if not forloop.last %},{% endif %}
+          {% endfor %}
+        ]
+      }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ];
+
+  const sidebarItems = document.querySelectorAll(".sidebar li");
+  const topicsContainer = document.getElementById("topics-container");
+  const currentChapterTitle = document.getElementById("current-chapter-title");
+
+  function renderTopics(index) {
+    topicsContainer.innerHTML = "";
+    
+    if (!chaptersData[index]) return;
+    
+    const chapter = chaptersData[index];
+    
+    // Обновляем заголовок
+    currentChapterTitle.textContent = chapter.title;
+    
+    // Отображаем топики
+    if (chapter.topics.length === 0) {
+      topicsContainer.innerHTML = '<p class="no-topics">В этой главе пока нет тем</p>';
+      return;
+    }
+    
+    chapter.topics.forEach(topic => {
+      const card = document.createElement("div");
+      card.className = "card";
+      
+      card.onclick = () => {
+        // Используем шаблон с заменой ID
+        const url = TOPIC_URL_TEMPLATE.replace('9999', topic.id);
+        window.location.href = url;
+      };
+      
+      card.innerHTML = `
+        <h3>${topic.title}</h3>
+        <p>${topic.description || "Изучите эту тему"}</p>
+      `;
+      topicsContainer.appendChild(card);
+    });
+    
+    // Добавляем плейсхолдеры для сохранения сетки
+    if (window.innerWidth >= 769 && chapter.topics.length < 4) {
+      const placeholdersCount = 4 - chapter.topics.length;
+      for (let i = 0; i < placeholdersCount; i++) {
+        const placeholder = document.createElement("div");
+        placeholder.className = "card card-placeholder";
+        topicsContainer.appendChild(placeholder);
+      }
+    }
+  }
+
+  function selectCategory(index) {
+    sidebarItems.forEach((item, i) => {
+      item.classList.toggle("active", i === index);
+    });
+    
+    renderTopics(index);
+  }
+
+  // Функция для открытия темы (для карточек, созданных в исходном HTML)
+  function openTopic(topicId) {
+    // Просто заменяем ID в шаблоне
+    const url = TOPIC_URL_TEMPLATE.replace('9999', topicId);
+    window.location.href = url;
+  }
+
+  // Обработчик изменения размера окна
+  window.addEventListener('resize', () => {
+    const activeIndex = Array.from(sidebarItems).findIndex(item => 
+      item.classList.contains('active')
+    );
+    if (activeIndex !== -1 && chaptersData[activeIndex]) {
+      renderTopics(activeIndex);
+    }
+  });
+
+  // Инициализация
+  if (chaptersData.length > 0) {
+    renderTopics(0);
+  }
+</script>
+{% endblock content %}
