@@ -1,0 +1,1313 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}PyLab - Interactive Python Learning Platform{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Main container */
+    .homepage-container {
+        overflow-x: hidden;
+    }
+
+    /* Hero Section */
+    .hero-section {
+        min-height: 90vh;
+        background: linear-gradient(135deg, 
+            var(--color-bg-primary) 0%, 
+            var(--color-bg-secondary) 100%);
+        position: relative;
+        overflow: hidden;
+        padding: 80px 20px 60px;
+        display: flex;
+        align-items: center;
+    }
+
+    .hero-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        opacity: 0.05;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .code-background {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 14px;
+        color: var(--color-accent-primary);
+        line-height: 1.8;
+        padding: 40px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        animation: scrollCode 30s linear infinite;
+    }
+
+    @keyframes scrollCode {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(-50%); }
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 1;
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+        width: 100%;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 24px;
+        background: linear-gradient(135deg, 
+            var(--color-text-light) 0%, 
+            var(--color-accent-primary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+        color: var(--color-text-secondary);
+        max-width: 700px;
+        margin: 0 auto 40px;
+        line-height: 1.6;
+    }
+
+    .hero-cta {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-bottom: 60px;
+        flex-wrap: wrap;
+    }
+
+    .hero-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 16px 32px;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        font-size: 1.1rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        min-width: 180px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+        color: var(--color-bg-primary);
+        border: none;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .btn-outline {
+        background: transparent;
+        color: var(--color-accent-primary);
+        border-color: var(--color-accent-primary);
+    }
+
+    .btn-outline:hover {
+        background: rgba(126, 231, 135, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .platform-stats {
+        display: flex;
+        justify-content: center;
+        gap: 50px;
+        flex-wrap: wrap;
+        margin-top: 60px;
+        padding: 30px;
+        background: rgba(22, 27, 34, 0.7);
+        border-radius: var(--radius-xl);
+        border: 1px solid var(--color-border-primary);
+        backdrop-filter: blur(10px);
+    }
+
+    .stat {
+        text-align: center;
+        min-width: 150px;
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--color-accent-primary);
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: var(--color-text-secondary);
+    }
+
+    /* Interactive Terminal */
+    .interactive-terminal {
+        background: var(--color-bg-tertiary);
+        border: 1px solid var(--color-border-primary);
+        border-radius: var(--radius-lg);
+        max-width: 800px;
+        margin: 40px auto 0;
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+    }
+
+    .terminal-header {
+        background: var(--color-bg-secondary);
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-bottom: 1px solid var(--color-border-primary);
+    }
+
+    .terminal-dots {
+        display: flex;
+        gap: 6px;
+    }
+
+    .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+
+    .dot.red { background: #ff5f56; }
+    .dot.yellow { background: #ffbd2e; }
+    .dot.green { background: #27ca3f; }
+
+    .terminal-title {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.9rem;
+        color: var(--color-text-secondary);
+    }
+
+    .terminal-body {
+        padding: 20px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.95rem;
+        min-height: 150px;
+    }
+
+    .terminal-body pre {
+        margin: 0;
+        padding: 5px 0;
+        color: var(--color-text-primary);
+    }
+
+    .typing {
+        position: relative;
+        display: inline-block;
+    }
+
+    .typing::after {
+        content: '|';
+        position: absolute;
+        right: -8px;
+        color: var(--color-accent-primary);
+        animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+        0%, 50% { opacity: 1; }
+        51%, 100% { opacity: 0; }
+    }
+
+    /* Features Section */
+    .features-section {
+        padding: 100px 20px;
+        background: var(--color-bg-primary);
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--color-text-light);
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .section-title i {
+        color: var(--color-accent-primary);
+        font-size: 2.2rem;
+    }
+
+    .section-subtitle {
+        font-size: 1.1rem;
+        color: var(--color-text-secondary);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .feature-card {
+        background: var(--color-bg-secondary);
+        border: 1px solid var(--color-border-primary);
+        border-radius: var(--radius-lg);
+        padding: 35px 30px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--color-accent-primary);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(126, 231, 135, 0.1);
+        color: var(--color-accent-primary);
+        border-radius: var(--radius-lg);
+        font-size: 1.8rem;
+        margin-bottom: 25px;
+    }
+
+    .feature-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--color-text-light);
+        margin-bottom: 15px;
+    }
+
+    .feature-description {
+        color: var(--color-text-secondary);
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    .feature-preview {
+        margin-top: 20px;
+        background: var(--color-bg-primary);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        border: 1px solid var(--color-border-primary);
+    }
+
+    .code-snippet {
+        padding: 20px;
+        overflow-x: auto;
+    }
+
+    .code-snippet pre {
+        margin: 0;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        color: var(--color-accent-primary);
+        line-height: 1.5;
+    }
+
+    /* Learning Path Section */
+    .learning-path-section {
+        padding: 100px 20px;
+        background: linear-gradient(135deg, 
+            var(--color-bg-secondary) 0%, 
+            var(--color-bg-primary) 100%);
+    }
+
+    .path-timeline {
+        max-width: 800px;
+        margin: 60px auto 0;
+        position: relative;
+    }
+
+    .path-timeline::before {
+        content: '';
+        position: absolute;
+        left: 30px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(to bottom, 
+            var(--color-accent-primary), 
+            transparent);
+        opacity: 0.3;
+    }
+
+    .path-level {
+        display: flex;
+        gap: 30px;
+        margin-bottom: 50px;
+        position: relative;
+        opacity: 0;
+        transform: translateX(-20px);
+        animation: fadeInRight 0.6s ease forwards;
+    }
+
+    .path-level:nth-child(1) { animation-delay: 0.1s; }
+    .path-level:nth-child(2) { animation-delay: 0.3s; }
+    .path-level:nth-child(3) { animation-delay: 0.5s; }
+
+    @keyframes fadeInRight {
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .level-badge {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-weight: 600;
+        font-size: 0.8rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .level-badge.beginner {
+        background: linear-gradient(135deg, #7ee787, #56d364);
+        color: var(--color-bg-primary);
+    }
+
+    .level-badge.intermediate {
+        background: linear-gradient(135deg, #58a6ff, #1f6feb);
+        color: var(--color-bg-primary);
+    }
+
+    .level-badge.advanced {
+        background: linear-gradient(135deg, #bc8cff, #8957e5);
+        color: var(--color-bg-primary);
+    }
+
+    .level-badge i {
+        font-size: 1.2rem;
+        margin-bottom: 4px;
+    }
+
+    .level-content {
+        flex: 1;
+        background: var(--color-bg-secondary);
+        border: 1px solid var(--color-border-primary);
+        border-radius: var(--radius-lg);
+        padding: 25px;
+        position: relative;
+    }
+
+    .level-content::before {
+        content: '';
+        position: absolute;
+        left: -10px;
+        top: 25px;
+        width: 20px;
+        height: 20px;
+        background: var(--color-bg-secondary);
+        border-left: 1px solid var(--color-border-primary);
+        border-bottom: 1px solid var(--color-border-primary);
+        transform: rotate(45deg);
+    }
+
+    .level-content h3 {
+        font-size: 1.3rem;
+        color: var(--color-text-light);
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .level-topics {
+        list-style: none;
+        padding: 0;
+    }
+
+    .level-topics li {
+        color: var(--color-text-secondary);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .level-topics i {
+        color: var(--color-accent-primary);
+        font-size: 0.9rem;
+    }
+
+    /* Platform Preview */
+    .platform-preview {
+        padding: 100px 20px;
+        background: var(--color-bg-primary);
+    }
+
+    .preview-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .preview-header {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    .preview-header h2 {
+        font-size: 2.5rem;
+        color: var(--color-text-light);
+        margin-bottom: 16px;
+    }
+
+    .preview-header p {
+        font-size: 1.1rem;
+        color: var(--color-text-secondary);
+    }
+
+    .preview-window {
+        background: var(--color-bg-tertiary);
+        border: 1px solid var(--color-border-primary);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        margin-bottom: 50px;
+        box-shadow: var(--shadow-xl);
+    }
+
+    .ide-preview {
+        display: flex;
+        min-height: 500px;
+    }
+
+    @media (max-width: 768px) {
+        .ide-preview {
+            flex-direction: column;
+        }
+    }
+
+    .ide-sidebar {
+        width: 250px;
+        background: var(--color-bg-secondary);
+        border-right: 1px solid var(--color-border-primary);
+        padding: 20px;
+    }
+
+    .file-tree {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .file, .folder {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 15px;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: var(--color-text-secondary);
+    }
+
+    .file:hover, .folder:hover {
+        background: var(--color-bg-hover);
+    }
+
+    .file.active {
+        background: rgba(126, 231, 135, 0.1);
+        color: var(--color-accent-primary);
+        border: 1px solid rgba(126, 231, 135, 0.2);
+    }
+
+    .file i, .folder i {
+        font-size: 1rem;
+    }
+
+    .ide-editor {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .editor-header {
+        background: var(--color-bg-secondary);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--color-border-primary);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .editor-header span {
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--color-text-light);
+        font-weight: 500;
+    }
+
+    .btn-run {
+        background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+        color: var(--color-bg-primary);
+        border: none;
+        padding: 8px 20px;
+        border-radius: var(--radius-sm);
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .btn-run:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .editor-content {
+        flex: 1;
+        padding: 30px;
+        overflow-x: auto;
+        background: var(--color-bg-tertiary);
+    }
+
+    .editor-content pre {
+        margin: 0;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: var(--color-text-primary);
+    }
+
+    .editor-output {
+        background: var(--color-bg-primary);
+        border-top: 1px solid var(--color-border-primary);
+        padding: 20px;
+    }
+
+    .output-header {
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--color-text-secondary);
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+    }
+
+    .output-content {
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--color-accent-primary);
+        padding: 15px;
+        background: rgba(22, 27, 34, 0.5);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--color-border-primary);
+    }
+
+    .preview-cta {
+        text-align: center;
+    }
+
+    .cta-note {
+        color: var(--color-text-secondary);
+        margin-top: 15px;
+        font-size: 0.9rem;
+    }
+
+    /* Animation Classes */
+    .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .animate-on-scroll.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+        .hero-title {
+            font-size: 3rem;
+        }
+        
+        .section-title {
+            font-size: 2.2rem;
+        }
+        
+        .features-grid {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero-section {
+            padding: 60px 20px 40px;
+            min-height: auto;
+        }
+        
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .hero-cta {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .hero-btn {
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .platform-stats {
+            gap: 30px;
+            padding: 20px;
+        }
+        
+        .stat {
+            min-width: 120px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+        }
+        
+        .features-section,
+        .learning-path-section,
+        .platform-preview {
+            padding: 60px 20px;
+        }
+        
+        .path-timeline::before {
+            left: 20px;
+        }
+        
+        .level-badge {
+            width: 40px;
+            height: 40px;
+            font-size: 0.7rem;
+        }
+        
+        .level-badge i {
+            font-size: 1rem;
+        }
+        
+        .level-content {
+            padding: 20px;
+        }
+        
+        .level-content::before {
+            left: -9px;
+            top: 15px;
+            width: 18px;
+            height: 18px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .hero-title {
+            font-size: 2rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1rem;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .platform-stats {
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .path-timeline::before {
+            display: none;
+        }
+        
+        .path-level {
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .level-content::before {
+            display: none;
+        }
+        
+        .ide-sidebar {
+            width: 100%;
+            border-right: none;
+            border-bottom: 1px solid var(--color-border-primary);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="homepage-container">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-background">
+            <div class="code-background">
+                <div class="code-line">def learn_python():</div>
+                <div class="code-line">    return PyLab()</div>
+                <div class="code-line"></div>
+                <div class="code-line">if __name__ == "__main__":</div>
+                <div class="code-line">    start_journey()</div>
+                <div class="code-line"></div>
+                <div class="code-line">class Student:</div>
+                <div class="code-line">    def __init__(self, name):</div>
+                <div class="code-line">        self.name = name</div>
+                <div class="code-line">        self.progress = 0</div>
+                <div class="code-line"></div>
+                <div class="code-line">    def learn(self, topic):</div>
+                <div class="code-line">        self.progress += 1</div>
+                <div class="code-line">        return f"Learned {topic}"</div>
+                <div class="code-line"></div>
+                <div class="code-line"># Welcome to PyLab</div>
+                <div class="code-line"># Start your coding journey today</div>
+            </div>
+        </div>
+        
+        <div class="hero-content">
+            <h1 class="hero-title animate-on-scroll">
+                Python Mastery 
+                <br>
+                Through Practice
+            </h1>
+            
+            <p class="hero-subtitle animate-on-scroll">
+                Интерактивная платформа для изучения Python. 
+                От новичка до профессионала через код, проекты и реальные задачи.
+            </p>
+            
+            <div class="hero-cta animate-on-scroll">
+                <a href="" class="hero-btn btn-primary">
+                    <i class="bi bi-rocket-takeoff"></i>
+                    Начать бесплатно
+                </a>
+                <a href="#features" class="hero-btn btn-outline">
+                    <i class="bi bi-play-circle"></i>
+                    Узнать больше
+                </a>
+            </div>
+            
+            <!-- Platform Statistics -->
+            <div class="platform-stats animate-on-scroll">
+                <div class="stat">
+                    <div class="stat-value">10,000+</div>
+                    <div class="stat-label">Активных студентов</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">500+</div>
+                    <div class="stat-label">Интерактивных задач</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">50+</div>
+                    <div class="stat-label">Проектов</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">98%</div>
+                    <div class="stat-label">Успешных результатов</div>
+                </div>
+            </div>
+            
+            <!-- Interactive Terminal -->
+            <div class="interactive-terminal animate-on-scroll">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                    </div>
+                    <span class="terminal-title">Python Interactive Shell</span>
+                </div>
+                <div class="terminal-body">
+                    <pre><code>>>> print("Welcome to PyLab!")</code></pre>
+                    <pre><code>Welcome to PyLab!</code></pre>
+                    <pre><code>>>> <span class="typing">your_code_here</span></code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title">
+                    <i class="bi bi-lightning-charge"></i>
+                    Почему <span class="python-text">PyLab</span>
+                </h2>
+                <p class="section-subtitle">
+                    Инновационный подход к обучению программированию
+                </p>
+            </div>
+            
+            <div class="features-grid">
+                <!-- Feature 1 -->
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">
+                        <i class="bi bi-cpu"></i>
+                    </div>
+                    <h3 class="feature-title">Интерактивная среда</h3>
+                    <p class="feature-description">
+                        Пишите и запускайте Python код прямо в браузере. 
+                        Мгновенная проверка и подсказки в реальном времени.
+                    </p>
+                    <div class="feature-preview">
+                        <div class="code-snippet">
+                            <pre><code># Пример решения задачи
+def fibonacci(n):
+    a, b = 0, 1
+    for _ in range(n):
+        print(a, end=' ')
+        a, b = b, a + b
+
+fibonacci(10)</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">
+                        <i class="bi bi-kanban"></i>
+                    </div>
+                    <h3 class="feature-title">Проектное обучение</h3>
+                    <p class="feature-description">
+                        Создавайте реальные проекты: от веб-приложений 
+                        до анализа данных и машинного обучения.
+                    </p>
+                    <div class="feature-preview">
+                        <div class="code-snippet">
+                            <pre><code># Веб-приложение на Flask
+from flask import Flask
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return 'Hello PyLab!'</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">
+                        <i class="bi bi-graph-up"></i>
+                    </div>
+                    <h3 class="feature-title">Адаптивный путь</h3>
+                    <p class="feature-description">
+                        Персональная траектория обучения на основе 
+                        вашего прогресса, целей и предпочтений.
+                    </p>
+                    <div class="feature-preview">
+                        <div class="code-snippet">
+                            <pre><code># Рекомендации системы
+if user.level == 'beginner':
+    recommend_basics()
+elif user.interests == 'data':
+    recommend_data_science()</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Feature 4 -->
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <h3 class="feature-title">Сообщество</h3>
+                    <p class="feature-description">
+                        Обсуждайте решения, участвуйте в челленджах, 
+                        получайте код-ревью от опытных разработчиков.
+                    </p>
+                    <div class="feature-preview">
+                        <div class="code-snippet">
+                            <pre><code># Совместная работа
+def pair_programming(session):
+    share_code()
+    discuss_solutions()
+    learn_together()</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Learning Path Section -->
+    <section class="learning-path-section">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title">
+                    <i class="bi bi-signpost"></i>
+                    Ваш путь к мастерству
+                </h2>
+                <p class="section-subtitle">
+                    Структурированное обучение от основ к экспертизе
+                </p>
+            </div>
+            
+            <div class="path-timeline">
+                <!-- Level 1 -->
+                <div class="path-level">
+                    <div class="level-badge beginner">
+                        <i class="bi bi-emoji-smile"></i>
+                        <!-- <span>Начальный</span> -->
+                    </div>
+                    <div class="level-content">
+                        <h3>Python Fundamentals</h3>
+                        <ul class="level-topics">
+                            <li><i class="bi bi-check-circle"></i> Синтаксис и основы языка</li>
+                            <li><i class="bi bi-check-circle"></i> Структуры данных и алгоритмы</li>
+                            <li><i class="bi bi-check-circle"></i> Функции и модули</li>
+                            <li><i class="bi bi-check-circle"></i> Работа с файлами</li>
+                            <li><i class="bi bi-check-circle"></i> Обработка ошибок</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Level 2 -->
+                <div class="path-level">
+                    <div class="level-badge intermediate">
+                        <i class="bi bi-rocket"></i>
+                        <!-- <span>Средний</span> -->
+                    </div>
+                    <div class="level-content">
+                        <h3>Advanced Topics</h3>
+                        <ul class="level-topics">
+                            <li><i class="bi bi-code-square"></i> ООП и паттерны проектирования</li>
+                            <li><i class="bi bi-database"></i> Работа с базами данных</li>
+                            <li><i class="bi bi-globe"></i> Веб-разработка (Django/Flask)</li>
+                            <li><i class="bi bi-tools"></i> Тестирование и отладка</li>
+                            <li><i class="bi bi-diagram-3"></i> Асинхронное программирование</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Level 3 -->
+                <div class="path-level">
+                    <div class="level-badge advanced">
+                        <i class="bi bi-trophy"></i>
+                        <!-- <span>Продвинутый</span> -->
+                    </div>
+                    <div class="level-content">
+                        <h3>Specialization</h3>
+                        <ul class="level-topics">
+                            <li><i class="bi bi-cpu"></i> Машинное обучение и AI</li>
+                            <li><i class="bi bi-shield-check"></i> Backend Development</li>
+                            <li><i class="bi bi-graph-up"></i> Data Science и анализ данных</li>
+                            <li><i class="bi bi-bug"></i> DevOps и автоматизация</li>
+                            <li><i class="bi bi-layers"></i> Микросервисная архитектура</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Platform Preview -->
+    <section class="platform-preview">
+        <div class="container">
+            <div class="preview-header animate-on-scroll">
+                <h2>Изучайте через практику</h2>
+                <p>Погрузитесь в интерактивную среду обучения</p>
+            </div>
+            
+            <div class="preview-window animate-on-scroll">
+                <div class="ide-preview">
+                    <div class="ide-sidebar">
+                        <div class="file-tree">
+                            <div class="file active">
+                                <i class="bi bi-file-earmark-code"></i>
+                                main.py
+                            </div>
+                            <div class="file">
+                                <i class="bi bi-file-earmark-text"></i>
+                                requirements.txt
+                            </div>
+                            <div class="folder">
+                                <i class="bi bi-folder"></i>
+                                project/
+                            </div>
+                            <div class="folder">
+                                <i class="bi bi-folder"></i>
+                                tests/
+                            </div>
+                            <div class="file">
+                                <i class="bi bi-file-earmark-code"></i>
+                                utils.py
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ide-editor">
+                        <div class="editor-header">
+                            <span>main.py</span>
+                            <button class="btn-run">
+                                <i class="bi bi-play"></i> Run Code
+                            </button>
+                        </div>
+                        <div class="editor-content">
+                            <pre><code># PyLab Interactive Editor
+# Try changing the code below and click Run
+
+def greet(name):
+    """Greet a user with a welcome message"""
+    return f"Hello, {name}! Welcome to PyLab."
+
+def calculate_stats(numbers):
+    """Calculate basic statistics"""
+    if not numbers:
+        return None
+    
+    stats = {
+        'sum': sum(numbers),
+        'average': sum(numbers) / len(numbers),
+        'min': min(numbers),
+        'max': max(numbers)
+    }
+    return stats
+
+# Your code here
+user_name = "Python Developer"
+numbers = [10, 20, 30, 40, 50]
+
+# Call functions
+greeting = greet(user_name)
+statistics = calculate_stats(numbers)
+
+# Print results
+print(greeting)
+print("\nStatistics:", statistics)</code></pre>
+                        </div>
+                        <div class="editor-output">
+                            <div class="output-header">Output:</div>
+                            <div class="output-content">
+                                Hello, Python Developer! Welcome to PyLab.
+                                <br><br>
+                                Statistics: {'sum': 150, 'average': 30.0, 'min': 10, 'max': 50}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="preview-cta animate-on-scroll">
+                <a href="" class="btn btn-primary btn-large">
+                    <i class="bi bi-magic"></i>
+                    Попробовать бесплатно
+                </a>
+                <p class="cta-note">Без кредитной карты • 14 дней полного доступа</p>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all animate-on-scroll elements
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Terminal typing effect
+        const typingElement = document.querySelector('.typing');
+        if (typingElement) {
+            const phrases = [
+                'your_code_here',
+                'print("Hello PyLab")',
+                'def solve_problem():',
+                'import numpy as np',
+                'data = load_dataset()'
+            ];
+            let phraseIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+            
+            function typePhrase() {
+                const currentPhrase = phrases[phraseIndex];
+                
+                if (isDeleting) {
+                    typingElement.textContent = currentPhrase.substring(0, charIndex - 1);
+                    charIndex--;
+                } else {
+                    typingElement.textContent = currentPhrase.substring(0, charIndex + 1);
+                    charIndex++;
+                }
+                
+                if (!isDeleting && charIndex === currentPhrase.length) {
+                    isDeleting = true;
+                    setTimeout(typePhrase, 1500);
+                } else if (isDeleting && charIndex === 0) {
+                    isDeleting = false;
+                    phraseIndex = (phraseIndex + 1) % phrases.length;
+                    setTimeout(typePhrase, 500);
+                } else {
+                    const speed = isDeleting ? 50 : 100;
+                    setTimeout(typePhrase, speed);
+                }
+            }
+            
+            // Start typing after a delay
+            setTimeout(typePhrase, 1000);
+        }
+        
+        // Interactive terminal click handler
+        const terminalBody = document.querySelector('.terminal-body');
+        if (terminalBody) {
+            terminalBody.addEventListener('click', function() {
+                const newCode = document.createElement('pre');
+                newCode.innerHTML = '<code>>>> <span class="typing">your_code_here</span></code>';
+                this.appendChild(newCode);
+            });
+        }
+        
+        // Run button in IDE preview
+        const runButton = document.querySelector('.btn-run');
+        if (runButton) {
+            runButton.addEventListener('click', function() {
+                const output = document.querySelector('.output-content');
+                if (output) {
+                    output.innerHTML = `
+                        Hello, Python Developer! Welcome to PyLab.
+                        <br><br>
+                        Statistics: {'sum': 150, 'average': 30.0, 'min': 10, 'max': 50}
+                        <br><br>
+                        <span style="color: var(--color-accent-secondary);">
+                            ✓ Code executed successfully in 0.02s
+                        </span>
+                    `;
+                    
+                    // Add visual feedback
+                    this.innerHTML = '<i class="bi bi-check-circle"></i> Executed';
+                    this.style.background = 'linear-gradient(135deg, #27ca3f, #1f9e2f)';
+                    
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="bi bi-play"></i> Run Code';
+                        this.style.background = 'linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary))';
+                    }, 2000);
+                }
+            });
+        }
+        
+        // File tree interaction in IDE preview
+        const fileItems = document.querySelectorAll('.file, .folder');
+        fileItems.forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove active class from all items
+                fileItems.forEach(i => i.classList.remove('active'));
+                
+                // Add active class to clicked item
+                this.classList.add('active');
+                
+                // Update editor header
+                if (this.classList.contains('file')) {
+                    const fileName = this.textContent.trim();
+                    const editorHeader = document.querySelector('.editor-header span');
+                    if (editorHeader) {
+                        editorHeader.textContent = fileName;
+                    }
+                }
+            });
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Parallax effect for code background
+        window.addEventListener('scroll', function() {
+            const codeBackground = document.querySelector('.code-background');
+            if (codeBackground) {
+                const scrolled = window.pageYOffset;
+                const rate = scrolled * -0.5;
+                codeBackground.style.transform = `translateY(${rate}px)`;
+            }
+        });
+        
+        // Initialize all animations
+        function initAnimations() {
+            // Add delay for staggered animations
+            const pathLevels = document.querySelectorAll('.path-level');
+            pathLevels.forEach((level, index) => {
+                level.style.animationDelay = `${index * 0.2}s`;
+            });
+            
+            // Feature cards staggered animation
+            const featureCards = document.querySelectorAll('.feature-card');
+            featureCards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+        }
+        
+        initAnimations();
+    });
+</script>
+{% endblock %}

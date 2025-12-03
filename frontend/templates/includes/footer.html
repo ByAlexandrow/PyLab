@@ -1,8 +1,171 @@
 <footer>
-    <div class="social-links">
-        <a href="#" aria-label="Facebook">Facebook</a>
-        <a href="#" aria-label="Twitter">Twitter</a>
-        <a href="#" aria-label="Instagram">Instagram</a>
+    <div class="footer-content">
+        <!-- Верхняя часть футера -->
+        <div class="footer-top">
+            <!-- Логотип и описание -->
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <img src="/static/img/logo/logo_100.png" alt="PyLab Logo" />
+                    <div class="footer-logo-text">
+                        <h3 class="footer-title">PyLab</h3>
+                        <p class="footer-tagline">Learn Python the Right Way</p>
+                    </div>
+                </div>
+                <p class="footer-description">
+                    Master Python programming through structured learning paths, 
+                    practical exercises, and real-world projects. Start your journey today!
+                </p>
+            </div>
+
+            <!-- Быстрые ссылки -->
+            <div class="footer-quick-links">
+                <h4 class="footer-heading">Quick Links</h4>
+                <div class="quick-links-grid">
+                    <a href="{% url 'chapters:chapters' %}" class="quick-link">
+                        <i class="bi bi-arrow-right"></i>
+                        All Chapters
+                    </a>
+                    <a href="#" class="quick-link">
+                        <i class="bi bi-arrow-right"></i>
+                        Getting Started
+                    </a>
+                    <a href="#" class="quick-link">
+                        <i class="bi bi-arrow-right"></i>
+                        Python Basics
+                    </a>
+                    <a href="#" class="quick-link">
+                        <i class="bi bi-arrow-right"></i>
+                        Advanced Topics
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Разделитель -->
+        <div class="footer-divider"></div>
+
+        <!-- Средняя часть футера -->
+        <div class="footer-middle">
+            <!-- Категории ссылок -->
+            <div class="footer-columns">
+                <div class="footer-column">
+                    <h4 class="footer-heading">
+                        <i class="bi bi-book"></i>
+                        Learning
+                    </h4>
+                    <a href="{% url 'chapters:chapters' %}" class="footer-link">Chapters</a>
+                    <a href="" class="footer-link">Tests & Quizzes</a>
+                    <a href="" class="footer-link">Exercises</a>
+                    <a href="" class="footer-link">Projects</a>
+                </div>
+                
+                <div class="footer-column">
+                    <h4 class="footer-heading">
+                        <i class="bi bi-info-circle"></i>
+                        Resources
+                    </h4>
+                    <a href="" class="footer-link">About PyLab</a>
+                    <a href="" class="footer-link">FAQ</a>
+                    <a href="" class="footer-link">Blog</a>
+                    <a href="" class="footer-link">Contact Us</a>
+                </div>
+                
+                <div class="footer-column">
+                    <h4 class="footer-heading">
+                        <i class="bi bi-shield-check"></i>
+                        Legal
+                    </h4>
+                    <a href="" class="footer-link">Privacy Policy</a>
+                    <a href="" class="footer-link">Terms of Service</a>
+                    <a href="#" class="footer-link">Cookie Policy</a>
+                    <a href="#" class="footer-link">Code of Conduct</a>
+                </div>
+                
+                <div class="footer-column">
+                    <h4 class="footer-heading">
+                        <i class="bi bi-people"></i>
+                        Community
+                    </h4>
+                    <a href="#" class="footer-link">Forum</a>
+                    <a href="#" class="footer-link">Discord</a>
+                    <a href="#" class="footer-link">GitHub</a>
+                    <a href="#" class="footer-link">Contributors</a>
+                </div>
+            </div>
+
+            <!-- Подписка на новости -->
+            <div class="footer-newsletter">
+                <h4 class="footer-heading">
+                    <i class="bi bi-envelope"></i>
+                    Stay Updated
+                </h4>
+                <p class="newsletter-text">
+                    Get the latest tutorials, tips, and project ideas delivered to your inbox.
+                </p>
+                <form class="newsletter-form">
+                    <div class="form-group">
+                        <input type="email" 
+                               placeholder="Your email address" 
+                               class="newsletter-input"
+                               required>
+                        <button type="submit" class="newsletter-btn">
+                            <i class="bi bi-send"></i>
+                            Subscribe
+                        </button>
+                    </div>
+                    <p class="newsletter-hint">
+                        We respect your privacy. Unsubscribe at any time.
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <!-- Разделитель -->
+        <div class="footer-divider"></div>
+
+        <!-- Нижняя часть футера -->
+        <div class="footer-bottom">
+            <!-- Социальные сети -->
+            <div class="social-links">
+                <h4 class="social-title">Follow Us</h4>
+                <div class="social-icons">
+                    <a href="#" class="social-icon github" aria-label="GitHub" title="GitHub">
+                        <i class="bi bi-github"></i>
+                    </a>
+                    <a href="#" class="social-icon twitter" aria-label="Twitter" title="Twitter">
+                        <i class="bi bi-twitter-x"></i>
+                    </a>
+                    <a href="#" class="social-icon youtube" aria-label="YouTube" title="YouTube">
+                        <i class="bi bi-youtube"></i>
+                    </a>
+                    <a href="#" class="social-icon discord" aria-label="Discord" title="Discord">
+                        <i class="bi bi-discord"></i>
+                    </a>
+                    <a href="#" class="social-icon telegram" aria-label="Telegram" title="Telegram">
+                        <i class="bi bi-telegram"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Копирайт и информация -->
+            <div class="footer-info">
+                <div class="copyright">
+                    &copy; {% now "Y" %} PyLab. All rights reserved.
+                </div>
+                <div class="footer-extra">
+                    <span class="version">v1.0.0</span>
+                    <span class="separator">•</span>
+                    <span class="made-with">
+                        Made with <i class="bi bi-heart-fill" style="color: #f85149;"></i> for Python learners
+                    </span>
+                </div>
+            </div>
+
+            <!-- Кнопка "Наверх" -->
+            <a href="#" class="back-to-top" id="footerBackToTop">
+                <i class="bi bi-chevron-up"></i>
+                Back to top
+            </a>
+        </div>
     </div>
-    <div class="love-text">With love &#128151</div>
 </footer>

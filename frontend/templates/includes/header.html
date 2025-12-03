@@ -1,18 +1,213 @@
 <header>
-    <div class="logo">
-        <img src="/static/img/logo/logo_100.png" alt="Логотип сайта" />
-        <div class="logo-text">PyLab</div>
+    <!-- Верхняя полоса -->
+    <!-- <div class="header-top">
+        <div class="container">
+            <div class="header-announcement">
+                <i class="bi bi-megaphone"></i>
+                <span class="announcement-text">
+                    New: Advanced Python Topics just added! 
+                    <a href="#" class="announcement-link">Check it out →</a>
+                </span>
+            </div>
+            
+            <div class="header-utilities">
+                <a href="#" class="utility-link">
+                    <i class="bi bi-question-circle"></i>
+                    Help Center
+                </a>
+                <a href="#" class="utility-link">
+                    <i class="bi bi-translate"></i>
+                    Language
+                </a>
+                <a href="#" class="utility-link">
+                    <i class="bi bi-moon"></i>
+                    Dark Mode
+                </a>
+            </div>
+        </div>
+    </div> -->
+
+    <!-- Основной хедер -->
+    <div class="header-main">
+        <div class="container">
+            <!-- Логотип -->
+            <div class="header-logo">
+                <a href="/" class="logo-link">
+                    <img src="/static/img/logo/logo_100.png" alt="PyLab Logo" class="logo-image" />
+                    <div class="logo-text">
+                        <span class="logo-primary">PyLab</span>
+                        <span class="logo-subtitle">Learn Python</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Основная навигация -->
+            <nav class="header-nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="{% url 'chapters:chapters' %}" class="nav-link {% if 'chapters' in request.path %}active{% endif %}">
+                            <i class="bi bi-book"></i>
+                            <span class="nav-text">Chapters</span>
+                            <span class="nav-badge">New</span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-puzzle"></i>
+                            <span class="nav-text">Practice</span>
+                            <i class="bi bi-chevron-down dropdown-icon"></i>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a href="" class="dropdown-item">
+                                <i class="bi bi-question-circle"></i>
+                                Tests & Quizzes
+                            </a>
+                            <a href="" class="dropdown-item">
+                                <i class="bi bi-code-slash"></i>
+                                Exercises
+                            </a>
+                            <a href="" class="dropdown-item">
+                                <i class="bi bi-kanban"></i>
+                                Projects
+                            </a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-graph-up"></i>
+                            <span class="nav-text">Progress</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-people"></i>
+                            <span class="nav-text">Community</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-journal-text"></i>
+                            <span class="nav-text">Blog</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Поиск и действия пользователя -->
+            <div class="header-actions">
+                <!-- Поиск -->
+                <!-- <div class="search-container">
+                    <button class="search-toggle" aria-label="Search">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    <div class="search-box">
+                        <input type="text" 
+                               placeholder="Search topics, exercises..." 
+                               class="search-input">
+                        <button class="search-btn" aria-label="Submit search">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </div> -->
+
+                <!-- Действия пользователя -->
+                <div class="user-actions">
+                    {% if user.is_authenticated %}
+                        <!-- Уведомления -->
+                        <div class="notification-dropdown">
+                            <button class="notification-btn" aria-label="Notifications">
+                                <i class="bi bi-bell"></i>
+                                <span class="notification-count">3</span>
+                            </button>
+                            <div class="notification-menu">
+                                <div class="notification-header">
+                                    <h4>Notifications</h4>
+                                    <a href="#" class="mark-all-read">Mark all as read</a>
+                                </div>
+                                <div class="notification-list">
+                                    <!-- Список уведомлений -->
+                                </div>
+                                <a href="#" class="notification-footer">
+                                    View all notifications
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Профиль пользователя -->
+                        <div class="profile-dropdown">
+                            <button class="profile-btn" aria-label="User profile">
+                                <img src="/static/img/user/face.jpg" alt="User avatar" class="profile-avatar" />
+                                <span class="profile-name">{{ user.username }}</span>
+                                <i class="bi bi-chevron-down"></i>
+                            </button>
+                            <div class="profile-menu">
+                                <div class="profile-info">
+                                    <img src="/static/img/user/face.jpg" alt="User avatar" />
+                                    <div class="profile-details">
+                                        <strong>{{ user.username }}</strong>
+                                        <small>{{ user.email }}</small>
+                                    </div>
+                                </div>
+                                <div class="profile-menu-items">
+                                    <a href="/users/profile/" class="profile-item">
+                                        <i class="bi bi-person"></i>
+                                        My Profile
+                                    </a>
+                                    <a href="/users/progress/" class="profile-item">
+                                        <i class="bi bi-graph-up"></i>
+                                        My Progress
+                                    </a>
+                                    <a href="/users/settings/" class="profile-item">
+                                        <i class="bi bi-gear"></i>
+                                        Settings
+                                    </a>
+                                    <div class="menu-divider"></div>
+                                    <a href="/auth/logout/" class="profile-item logout">
+                                        <i class="bi bi-box-arrow-right"></i>
+                                        Logout
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <!-- Кнопки входа/регистрации -->
+                        <div class="auth-buttons">
+                            <a href="{% url 'login' %}" class="auth-btn login-btn">
+                                <i class="bi bi-box-arrow-in-right"></i>
+                                Log In
+                            </a>
+                            <a href="{% url 'register' %}" class="auth-btn signup-btn">
+                                <i class="bi bi-person-plus"></i>
+                                Sign Up
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Мобильное меню -->
+                <button class="menu-toggle" aria-label="Toggle menu">
+                    <span class="menu-icon"></span>
+                    <span class="menu-icon"></span>
+                    <span class="menu-icon"></span>
+                </button>
+            </div>
+        </div>
     </div>
-    <nav>
-        <!-- <a href="/algorithms/">Algorithms</a>
-        <a href="#">Test_db</a> -->
-        <a href="{% url 'chapters:chapters' %}">CHAPTERS</a>
-        <!-- <a href="/tasks/">Task_db</a>
-        <a href="/tasks/">Projects</a>
-        <a href="/manuals/">Manuals</a> -->
+
+    <!-- Мобильная навигация -->
+    <nav class="mobile-nav">
+        <div class="mobile-nav-header">
+            <div class="mobile-logo">
+                <img src="/static/img/logo/logo_100.png" alt="PyLab Logo" />
+                <span>PyLab</span>
+            </div>
+            <button class="mobile-close" aria-label="Close menu">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        
+        <div class="mobile-nav-content">
+            <!-- Мобильные ссылки -->
+        </div>
     </nav>
-    <div class="profile" aria-label="Профиль пользователя">
-        <img src="/static/img/user/face.jpg" />
-        <a href="/users/profile/">PROFILE</a>
-    </div>
 </header>

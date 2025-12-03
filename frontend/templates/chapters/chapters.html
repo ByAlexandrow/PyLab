@@ -1,151 +1,1020 @@
 {% extends "base.html" %}
-{% block title %} PyLab - Chapters {% endblock title %}
+{% load static %}
+
+{% block title %}PyLab - Chapters{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Основной контейнер страницы глав */
+    .chapters-main-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        
+        min-height: calc(100vh - 200px);
+        animation: fadeInUp 0.5s ease;
+    }
+
+    /* Заголовок страницы */
+    .chapters-header {
+        text-align: center;
+        margin-top: 30px;
+        margin-bottom: 100px;
+        position: relative;
+    }
+
+    .chapters-title {
+        font-size: 3.2rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 15px;
+        letter-spacing: -1px;
+    }
+
+    .chapters-subtitle {
+        font-size: 1.2rem;
+        color: var(--color-text-secondary);
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    .chapters-header::after {
+        content: '';
+        position: absolute;
+        bottom: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary));
+        border-radius: 2px;
+    }
+
+    /* Обертка контента */
+    .chapters-content-wrapper {
+        display: flex;
+        gap: 40px;
+        align-items: flex-start;
+        margin-top: 30px;
+    }
+
+    /* Сайдбар */
+    .chapters-sidebar-container {
+        width: 320px;
+        flex-shrink: 0;
+        position: sticky;
+        top: 120px;
+        align-self: flex-start;
+    }
+
+    .chapters-sidebar {
+        width: 100%;
+        background: var(--color-bg-secondary);
+        border-radius: var(--radius-xl);
+        padding: 25px;
+        border: 1px solid var(--color-border-primary);
+        box-shadow: var(--shadow-md);
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+    }
+
+    .chapters-sidebar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .chapters-sidebar::-webkit-scrollbar-track {
+        background: var(--color-bg-primary);
+        border-radius: 3px;
+    }
+
+    .chapters-sidebar::-webkit-scrollbar-thumb {
+        background: var(--color-border-primary);
+        border-radius: 3px;
+    }
+
+    .chapters-sidebar::-webkit-scrollbar-thumb:hover {
+        background: var(--color-accent-primary);
+    }
+
+    .sidebar-header {
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid var(--color-border-primary);
+    }
+
+    .sidebar-title {
+        font-size: 1.3rem;
+        color: var(--color-text-light);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .sidebar-title i {
+        color: var(--color-accent-primary);
+    }
+
+    .sidebar-stats {
+        font-size: 0.9rem;
+        color: var(--color-text-secondary);
+        margin-top: 8px;
+    }
+
+    .sidebar-stats strong {
+        color: var(--color-accent-primary);
+    }
+
+    #chapters-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    #chapters-list li {
+        padding: 16px 20px;
+        margin-bottom: 10px;
+        background: var(--color-bg-primary);
+        border: 1px solid var(--color-border-primary);
+        border-radius: var(--radius-lg);
+        color: var(--color-text-primary);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    #chapters-list li::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: var(--color-accent-primary);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    #chapters-list li:hover {
+        background: var(--color-bg-hover);
+        transform: translateX(5px);
+        border-color: var(--color-accent-primary);
+    }
+
+    #chapters-list li:hover::before {
+        transform: scaleX(1);
+    }
+
+    #chapters-list li.active {
+        background: linear-gradient(135deg, rgba(126, 231, 135, 0.15), rgba(86, 211, 100, 0.1));
+        border-color: var(--color-accent-primary);
+        color: var(--color-accent-primary);
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(126, 231, 135, 0.1);
+    }
+
+    #chapters-list li.active::before {
+        transform: scaleX(1);
+        background: var(--color-accent-secondary);
+    }
+
+    #chapters-list li i {
+        font-size: 1.1rem;
+        color: var(--color-accent-primary);
+        transition: transform 0.3s ease;
+    }
+
+    #chapters-list li:hover i {
+        transform: rotate(15deg);
+    }
+
+    #chapters-list li.active i {
+        color: var(--color-accent-secondary);
+    }
+
+    /* Секция топиков */
+    .topics-section {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .section-header {
+        margin-bottom: 0px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid var(--color-border-primary);
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+        color: var(--color-text-light);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 10px;
+    }
+
+    .section-title i {
+        color: var(--color-accent-primary);
+        font-size: 1.5rem;
+    }
+
+    .current-chapter {
+        background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 700;
+        margin-left: 10px;
+    }
+
+    .chapter-description {
+        color: var(--color-text-secondary);
+        font-size: 1rem;
+        line-height: 1.6;
+        max-width: 800px;
+    }
+
+    /* Сетка топиков */
+    .topics-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+
+    .topic-card {
+        background: var(--color-bg-secondary);
+        border: 1px solid var(--color-border-primary);
+        border-radius: var(--radius-lg);
+        padding: 25px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        animation: fadeInUp 0.5s ease;
+        animation-fill-mode: both;
+        height: 100%;
+    }
+
+    .topic-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary));
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .topic-card:hover {
+        transform: translateY(-8px);
+        border-color: var(--color-accent-primary);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .topic-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .topic-card-header {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+
+    .topic-number {
+        font-size: 0.9rem;
+        color: var(--color-accent-primary);
+        background: rgba(126, 231, 135, 0.1);
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        border: 1px solid rgba(126, 231, 135, 0.2);
+    }
+
+    .topic-difficulty {
+        font-size: 0.8rem;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-weight: 500;
+    }
+
+    .difficulty-easy {
+        background: rgba(126, 231, 135, 0.1);
+        color: var(--color-accent-primary);
+        border: 1px solid rgba(126, 231, 135, 0.2);
+    }
+
+    .difficulty-medium {
+        background: rgba(255, 211, 77, 0.1);
+        color: #ffd34d;
+        border: 1px solid rgba(255, 211, 77, 0.2);
+    }
+
+    .difficulty-hard {
+        background: rgba(248, 81, 73, 0.1);
+        color: #f85149;
+        border: 1px solid rgba(248, 81, 73, 0.2);
+    }
+
+    .topic-title {
+        font-size: 1.3rem;
+        color: var(--color-text-light);
+        font-weight: 600;
+        margin-bottom: 10px;
+        line-height: 1.4;
+        flex: 1;
+    }
+
+    .topic-description {
+        color: var(--color-text-secondary);
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 20px;
+        flex: 1;
+    }
+
+    .topic-meta {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-top: auto;
+        padding-top: 15px;
+        border-top: 1px solid var(--color-border-primary);
+        font-size: 0.85rem;
+        color: var(--color-text-secondary);
+    }
+
+    .topic-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .topic-meta-item i {
+        color: var(--color-accent-primary);
+        font-size: 0.9rem;
+    }
+
+    /* Кнопка "Показать все" */
+    .show-all-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 25px;
+        background: var(--color-accent-primary);
+        color: var(--color-bg-primary);
+        border: none;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        margin-top: 20px;
+    }
+
+    .show-all-btn:hover {
+        background: var(--color-accent-secondary);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        text-decoration: none;
+    }
+
+    .show-all-btn i {
+        transition: transform 0.3s ease;
+    }
+
+    .show-all-btn:hover i {
+        transform: translateX(5px);
+    }
+
+    /* Прогресс главы */
+    .chapter-progress {
+        background: var(--color-bg-tertiary);
+        border-radius: var(--radius-lg);
+        padding: 20px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        border: 1px solid var(--color-border-primary);
+    }
+
+    .progress-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .progress-title {
+        font-size: 1.1rem;
+        color: var(--color-text-light);
+        font-weight: 600;
+    }
+
+    .progress-percentage {
+        color: var(--color-accent-primary);
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+
+    .progress-bar {
+        height: 8px;
+        background: var(--color-border-primary);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: 10px;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary));
+        border-radius: 4px;
+        transition: width 0.5s ease;
+    }
+
+    .progress-stats {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
+        color: var(--color-text-secondary);
+    }
+
+    /* Пустые состояния */
+    .no-chapters,
+    .no-topics {
+        text-align: center;
+        padding: 60px 20px;
+        background: var(--color-bg-secondary);
+        border-radius: var(--radius-lg);
+        border: 2px dashed var(--color-border-primary);
+    }
+
+    .no-chapters i,
+    .no-topics i {
+        font-size: 3rem;
+        color: var(--color-text-secondary);
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+
+    .no-chapters p,
+    .no-topics p {
+        color: var(--color-text-secondary);
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+
+    .no-chapters .btn,
+    .no-topics .btn {
+        margin-top: 20px;
+    }
+
+    /* Анимация появления карточек */
+    .topic-card:nth-child(1) { animation-delay: 0.1s; }
+    .topic-card:nth-child(2) { animation-delay: 0.2s; }
+    .topic-card:nth-child(3) { animation-delay: 0.3s; }
+    .topic-card:nth-child(4) { animation-delay: 0.4s; }
+    .topic-card:nth-child(5) { animation-delay: 0.5s; }
+    .topic-card:nth-child(6) { animation-delay: 0.6s; }
+    .topic-card:nth-child(7) { animation-delay: 0.7s; }
+    .topic-card:nth-child(8) { animation-delay: 0.8s; }
+    .topic-card:nth-child(9) { animation-delay: 0.9s; }
+    .topic-card:nth-child(10) { animation-delay: 1.0s; }
+
+    /* Адаптивность */
+    @media (max-width: 1200px) {
+        .chapters-content-wrapper {
+            gap: 30px;
+        }
+        
+        .chapters-sidebar-container {
+            width: 280px;
+        }
+        
+        .topics-container {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+    }
+
+    @media (max-width: 992px) {
+        .chapters-content-wrapper {
+            flex-direction: column;
+        }
+        
+        .chapters-sidebar-container {
+            width: 100%;
+            position: static;
+        }
+        
+        .chapters-sidebar {
+            max-height: none;
+        }
+        
+        .topics-container {
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+    }
+
+    @media (max-width: 768px) {
+        .chapters-main-container {
+            padding: 20px 15px;
+        }
+        
+        .chapters-title {
+            font-size: 2.5rem;
+        }
+        
+        .chapters-subtitle {
+            font-size: 1.1rem;
+        }
+        
+        .topics-container {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .topic-card {
+            padding: 20px;
+        }
+        
+        .topic-title {
+            font-size: 1.2rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .chapters-title {
+            font-size: 2rem;
+        }
+        
+        .topics-container {
+            grid-template-columns: 1fr;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+        }
+        
+        #chapters-list li {
+            padding: 14px 16px;
+        }
+        
+        .topic-meta {
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .chapters-title {
+            font-size: 1.8rem;
+        }
+        
+        .topic-card {
+            padding: 18px;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="main-container">
-  <h1 class="section-title">CHAPTERS</h1>
-  <div class="content-wrapper">
-    <!-- Сайдбар с категориями -->
-    <div class="sidebar-container">
-      <nav class="sidebar">
-        <ul id="chapters-list">
-          {% for chapter in chapters %}
-            <li 
-              {% if forloop.first %}class="active"{% endif %} 
-              onclick="selectCategory({{ forloop.counter0 }})"
-              data-chapter-id="{{ chapter.id }}"
-            >
-              {{ chapter.title }}
-            </li>
-          {% empty %}
-            <li>Нет доступных глав</li>
-          {% endfor %}
-        </ul>
-      </nav>
-    </div>
-    <!-- Секция с топиками -->
-    <div class="topics-section">
-      <h2 class="section-title">
-        TOPICS:
-        <span id="current-chapter-title" class="current-chapter">
-          {% if chapters.0 %}{{ chapters.0.title }}{% endif %}
-        </span>
-      </h2>
-      <div class="topics-container" id="topics-container">
-        {% if chapters.0 %}
-          {% for topic in chapters.0.topics.all %}
-            <div class="card" onclick="openTopic({{ topic.id }})">
-              <h3>{{ topic.title }}</h3>
-              <p>{{ topic.description|default:"Изучите эту тему" }}</p>
+<div class="chapters-main-container">
+    <!-- Заголовок страницы -->
+    <header class="chapters-header">
+        <h1 class="chapters-title">Learning Path</h1>
+        <p class="chapters-subtitle">
+            Master Python step by step through structured chapters and practical exercises. 
+            Start from basics and progress to advanced topics.
+        </p>
+    </header>
+
+    <!-- Обертка контента -->
+    <div class="chapters-content-wrapper">
+        <!-- Сайдбар с главами -->
+        <aside class="chapters-sidebar-container">
+            <nav class="chapters-sidebar">
+                <div class="sidebar-header">
+                    <h3 class="sidebar-title">
+                        <i class="bi bi-journals"></i>
+                        All Chapters
+                    </h3>
+                    <div class="sidebar-stats">
+                        <strong>{{ chapters|length }}</strong> chapters • 
+                        <strong>{{ total_topics }}</strong> topics
+                    </div>
+                </div>
+                
+                <ul id="chapters-list">
+                    {% for chapter in chapters %}
+                        <li 
+                            {% if forloop.first %}class="active"{% endif %} 
+                            onclick="selectChapter({{ forloop.counter0 }})"
+                            data-chapter-id="{{ chapter.id }}"
+                        >
+                            <i class="bi bi-book"></i>
+                            <span class="chapter-title">{{ chapter.title }}</span>
+                        </li>
+                    {% empty %}
+                        <li class="no-chapters">
+                            <i class="bi bi-journal-x"></i>
+                            <p>No chapters available yet</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Основной контент -->
+        <main class="topics-section">
+            <!-- Заголовок текущей главы -->
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="bi bi-list-task"></i>
+                    Topics:
+                    <span id="current-chapter-title" class="current-chapter">
+                        {% if chapters.0 %}{{ chapters.0.title }}{% endif %}
+                    </span>
+                </h2>
+                
+                {% if chapters.0 %}
+                    <p class="chapter-description" id="current-chapter-description">
+                        {{ chapters.0.description|default:"Explore topics in this chapter to build your Python skills." }}
+                    </p>
+                {% endif %}
             </div>
-          {% empty %}
-            <p>We will add some topics very soon)</p>
-          {% endfor %}
-        {% endif %}
-      </div>
+
+            <!-- Прогресс главы -->
+            <div class="chapter-progress" id="chapterProgress" style="display: none;">
+                <div class="progress-header">
+                    <div class="progress-title">Chapter Progress</div>
+                    <div class="progress-percentage">0%</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-stats">
+                    <span>Completed: <strong id="completedCount">0</strong> of <strong id="totalCount">0</strong></span>
+                    <span id="estimatedTime">Est. time: --</span>
+                </div>
+            </div>
+
+            <!-- Сетка топиков -->
+            <div class="topics-container" id="topics-container">
+                {% if chapters.0 %}
+                    {% for topic in chapters.0.topics.all %}
+                        <div class="topic-card" onclick="openTopic({{ topic.id }})" 
+                             data-topic-id="{{ topic.id }}"
+                             data-topic-order="{{ topic.order }}">
+                            <div class="topic-card-header">
+                                <span class="topic-number">Topic {{ topic.order }}</span>
+                                {% if topic.difficulty %}
+                                    <span class="topic-difficulty difficulty-{{ topic.difficulty|lower }}">
+                                        {{ topic.difficulty }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                            
+                            <h3 class="topic-title">{{ topic.title }}</h3>
+                            
+                            <p class="topic-description">
+                                {{ topic.description|default:"Learn essential concepts and practice with examples." }}
+                            </p>
+                            
+                            <div class="topic-meta">
+                                <span class="topic-meta-item">
+                                    <i class="bi bi-clock"></i>
+                                    {% with word_count=topic.content|wordcount|default:300 %}
+                                        {% widthratio word_count 200 1 as minutes %}
+                                        {{ minutes|add:"1" }} min
+                                    {% endwith %}
+                                </span>
+                                <span class="topic-meta-item">
+                                    <i class="bi bi-code-slash"></i>
+                                    Exercises
+                                </span>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="no-topics">
+                            <i class="bi bi-file-earmark-text"></i>
+                            <p>No topics in this chapter yet</p>
+                            <p class="text-secondary">Check back soon for updates!</p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <!-- Кнопка для навигации -->
+            <a href="#" class="show-all-btn" id="showAllBtn" style="display: none;">
+                <span>View All Chapters</span>
+                <i class="bi bi-arrow-right"></i>
+            </a>
+        </main>
     </div>
-  </div>
 </div>
+{% endblock %}
 
+{% block scripts %}
 <script>
-  // Получаем шаблон URL для topic
-  const TOPIC_URL_TEMPLATE = "{% url 'chapters:topic' 9999 %}";
-  // После замены получится что-то вроде: "/chapters/topic/9999/"
-  
-  // Данные из Django context в JavaScript
-  const chaptersData = [
-    {% for chapter in chapters %}
-      {
-        id: {{ chapter.id }},
-        title: "{{ chapter.title|escapejs }}",
-        topics: [
-          {% for topic in chapter.topics.all %}
+    // Получаем шаблон URL для topic
+    const TOPIC_URL_TEMPLATE = "{% url 'chapters:topic' 9999 %}";
+    
+    // Данные из Django context в JavaScript
+    const chaptersData = [
+        {% for chapter in chapters %}
             {
-              id: {{ topic.id }},
-              title: "{{ topic.title|escapejs }}",
-              description: "{{ topic.description|escapejs|default:'' }}"
+                id: {{ chapter.id }},
+                title: "{{ chapter.title|escapejs }}",
+                description: "{{ chapter.description|escapejs|default:'' }}",
+                topics: [
+                    {% for topic in chapter.topics.all %}
+                        {
+                            id: {{ topic.id }},
+                            title: "{{ topic.title|escapejs }}",
+                            description: "{{ topic.description|escapejs|default:'' }}",
+                            order: {{ topic.order }},
+                            difficulty: "{{ topic.difficulty|default:'Easy'|escapejs }}",
+                            contentLength: {{ topic.content|length|default:0 }},
+                            isCompleted: localStorage.getItem(`topic_${ {{ topic.id }} }_completed`) === 'true'
+                        }{% if not forloop.last %},{% endif %}
+                    {% endfor %}
+                ]
             }{% if not forloop.last %},{% endif %}
-          {% endfor %}
-        ]
-      }{% if not forloop.last %},{% endif %}
-    {% endfor %}
-  ];
+        {% endfor %}
+    ];
 
-  const sidebarItems = document.querySelectorAll(".sidebar li");
-  const topicsContainer = document.getElementById("topics-container");
-  const currentChapterTitle = document.getElementById("current-chapter-title");
+    const sidebarItems = document.querySelectorAll("#chapters-list li");
+    const topicsContainer = document.getElementById("topics-container");
+    const currentChapterTitle = document.getElementById("current-chapter-title");
+    const currentChapterDescription = document.getElementById("current-chapter-description");
+    const chapterProgress = document.getElementById("chapterProgress");
+    const progressFill = document.getElementById("progressFill");
+    const progressPercentage = document.querySelector(".progress-percentage");
+    const completedCount = document.getElementById("completedCount");
+    const totalCount = document.getElementById("totalCount");
+    const estimatedTime = document.getElementById("estimatedTime");
+    const showAllBtn = document.getElementById("showAllBtn");
 
-  function renderTopics(index) {
-    topicsContainer.innerHTML = "";
-    
-    if (!chaptersData[index]) return;
-    
-    const chapter = chaptersData[index];
-    
-    // Обновляем заголовок
-    currentChapterTitle.textContent = chapter.title;
-    
-    // Отображаем топики
-    if (chapter.topics.length === 0) {
-      topicsContainer.innerHTML = '<p class="no-topics">В этой главе пока нет тем</p>';
-      return;
+    // Загрузка прогресса пользователя
+    function loadUserProgress() {
+        const completedTopics = JSON.parse(localStorage.getItem('completed_topics') || '[]');
+        return new Set(completedTopics);
     }
-    
-    chapter.topics.forEach(topic => {
-      const card = document.createElement("div");
-      card.className = "card";
-      
-      card.onclick = () => {
-        // Используем шаблон с заменой ID
-        const url = TOPIC_URL_TEMPLATE.replace('9999', topic.id);
+
+    // Сохранение прогресса
+    function saveUserProgress(topicId, isCompleted) {
+        const completedTopics = JSON.parse(localStorage.getItem('completed_topics') || '[]');
+        
+        if (isCompleted && !completedTopics.includes(topicId)) {
+            completedTopics.push(topicId);
+        } else if (!isCompleted) {
+            const index = completedTopics.indexOf(topicId);
+            if (index > -1) {
+                completedTopics.splice(index, 1);
+            }
+        }
+        
+        localStorage.setItem('completed_topics', JSON.stringify(completedTopics));
+    }
+
+    // Обновление прогресса главы
+    function updateChapterProgress(chapterIndex) {
+        const chapter = chaptersData[chapterIndex];
+        if (!chapter || chapter.topics.length === 0) {
+            chapterProgress.style.display = 'none';
+            return;
+        }
+        
+        const completedTopics = loadUserProgress();
+        const chapterTopics = chapter.topics;
+        const completed = chapterTopics.filter(topic => completedTopics.has(topic.id)).length;
+        const total = chapterTopics.length;
+        const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+        
+        // Обновляем UI
+        progressFill.style.width = `${percentage}%`;
+        progressPercentage.textContent = `${percentage}%`;
+        completedCount.textContent = completed;
+        totalCount.textContent = total;
+        
+        // Расчет времени
+        const totalMinutes = chapterTopics.reduce((sum, topic) => sum + Math.max(1, Math.floor(topic.contentLength / 1000)), 0);
+        const remainingMinutes = chapterTopics
+            .filter(topic => !completedTopics.has(topic.id))
+            .reduce((sum, topic) => sum + Math.max(1, Math.floor(topic.contentLength / 1000)), 0);
+        
+        estimatedTime.textContent = `Est. time: ${remainingMinutes} min`;
+        
+        // Показываем прогресс
+        chapterProgress.style.display = 'block';
+    }
+
+    // Рендеринг топиков
+    function renderTopics(index) {
+        topicsContainer.innerHTML = "";
+        
+        if (!chaptersData[index]) return;
+        
+        const chapter = chaptersData[index];
+        
+        // Обновляем заголовок и описание
+        currentChapterTitle.textContent = chapter.title;
+        if (currentChapterDescription) {
+            currentChapterDescription.textContent = chapter.description || "Explore topics in this chapter to build your Python skills.";
+        }
+        
+        // Обновляем активный элемент в сайдбаре
+        sidebarItems.forEach((item, i) => {
+            item.classList.toggle("active", i === index);
+        });
+        
+        // Отображаем топики
+        if (chapter.topics.length === 0) {
+            topicsContainer.innerHTML = `
+                <div class="no-topics">
+                    <i class="bi bi-file-earmark-text"></i>
+                    <p>No topics in this chapter yet</p>
+                    <p class="text-secondary">Check back soon for updates!</p>
+                </div>
+            `;
+            chapterProgress.style.display = 'none';
+            return;
+        }
+        
+        const completedTopics = loadUserProgress();
+        
+        chapter.topics.forEach((topic, topicIndex) => {
+            const isCompleted = completedTopics.has(topic.id);
+            const minutes = Math.max(1, Math.floor(topic.contentLength / 1000));
+            
+            const card = document.createElement("div");
+            card.className = `topic-card ${isCompleted ? 'completed' : ''}`;
+            card.style.animationDelay = `${(topicIndex + 1) * 0.1}s`;
+            
+            card.onclick = () => {
+                // Отмечаем как прочитанный при клике
+                saveUserProgress(topic.id, true);
+                // Переходим к теме
+                const url = TOPIC_URL_TEMPLATE.replace('9999', topic.id);
+                window.location.href = url;
+            };
+            
+            card.innerHTML = `
+                <div class="topic-card-header">
+                    <span class="topic-number">Topic ${topic.order}</span>
+                    ${topic.difficulty ? `
+                        <span class="topic-difficulty difficulty-${topic.difficulty.toLowerCase()}">
+                            ${topic.difficulty}
+                        </span>
+                    ` : ''}
+                    ${isCompleted ? `
+                        <span class="topic-completed">
+                            <i class="bi bi-check-circle-fill" style="color: var(--color-accent-primary);"></i>
+                        </span>
+                    ` : ''}
+                </div>
+                
+                <h3 class="topic-title">${topic.title}</h3>
+                
+                <p class="topic-description">
+                    ${topic.description || "Learn essential concepts and practice with examples."}
+                </p>
+                
+                <div class="topic-meta">
+                    <span class="topic-meta-item">
+                        <i class="bi bi-clock"></i>
+                        ${minutes} min
+                    </span>
+                    <span class="topic-meta-item">
+                        <i class="bi bi-code-slash"></i>
+                        Exercises
+                    </span>
+                    ${isCompleted ? `
+                        <span class="topic-meta-item">
+                            <i class="bi bi-check-circle" style="color: var(--color-accent-primary);"></i>
+                            Completed
+                        </span>
+                    ` : ''}
+                </div>
+            `;
+            
+            topicsContainer.appendChild(card);
+        });
+        
+        // Обновляем прогресс
+        updateChapterProgress(index);
+        
+        // Добавляем плейсхолдеры для сохранения сетки
+        if (window.innerWidth >= 769 && chapter.topics.length < 4) {
+            const placeholdersCount = 4 - chapter.topics.length;
+            for (let i = 0; i < placeholdersCount; i++) {
+                const placeholder = document.createElement("div");
+                placeholder.className = "topic-card card-placeholder";
+                placeholder.style.visibility = 'hidden';
+                placeholder.style.height = '0';
+                placeholder.style.padding = '0';
+                placeholder.style.border = 'none';
+                topicsContainer.appendChild(placeholder);
+            }
+        }
+    }
+
+    // Выбор главы
+    function selectChapter(index) {
+        // Прокручиваем к началу
+        window.scrollTo({
+            top: document.querySelector('.section-header').offsetTop - 100,
+            behavior: 'smooth'
+        });
+        
+        // Рендерим топики
+        renderTopics(index);
+        
+        // Сохраняем текущую главу
+        localStorage.setItem('current_chapter_index', index);
+    }
+
+    // Открытие темы
+    function openTopic(topicId) {
+        const url = TOPIC_URL_TEMPLATE.replace('9999', topicId);
         window.location.href = url;
-      };
-      
-      card.innerHTML = `
-        <h3>${topic.title}</h3>
-        <p>${topic.description || "Изучите эту тему"}</p>
-      `;
-      topicsContainer.appendChild(card);
-    });
-    
-    // Добавляем плейсхолдеры для сохранения сетки
-    if (window.innerWidth >= 769 && chapter.topics.length < 4) {
-      const placeholdersCount = 4 - chapter.topics.length;
-      for (let i = 0; i < placeholdersCount; i++) {
-        const placeholder = document.createElement("div");
-        placeholder.className = "card card-placeholder";
-        topicsContainer.appendChild(placeholder);
-      }
     }
-  }
 
-  function selectCategory(index) {
-    sidebarItems.forEach((item, i) => {
-      item.classList.toggle("active", i === index);
+    // Инициализация
+    document.addEventListener('DOMContentLoaded', function() {
+        // Загружаем последнюю выбранную главу
+        const savedChapterIndex = localStorage.getItem('current_chapter_index');
+        const initialIndex = savedChapterIndex ? parseInt(savedChapterIndex) : 0;
+        
+        if (chaptersData.length > 0) {
+            // Рендерим начальную главу
+            renderTopics(initialIndex);
+            
+            // Обновляем кнопку "Показать все"
+            showAllBtn.href = "#chapters-list";
+            showAllBtn.style.display = 'inline-flex';
+            
+            // Добавляем обработчик для кнопки
+            showAllBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector('.chapters-sidebar').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            });
+            
+            // Добавляем хоткеи
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey || e.metaKey) return;
+                
+                const currentIndex = Array.from(sidebarItems).findIndex(item => 
+                    item.classList.contains('active')
+                );
+                
+                switch(e.key) {
+                    case 'ArrowUp':
+                        if (currentIndex > 0) {
+                            selectChapter(currentIndex - 1);
+                        }
+                        break;
+                    case 'ArrowDown':
+                        if (currentIndex < chaptersData.length - 1) {
+                            selectChapter(currentIndex + 1);
+                        }
+                        break;
+                    case 'Home':
+                        selectChapter(0);
+                        break;
+                    case 'End':
+                        selectChapter(chaptersData.length - 1);
+                        break;
+                }
+            });
+        }
     });
-    
-    renderTopics(index);
-  }
 
-  // Функция для открытия темы (для карточек, созданных в исходном HTML)
-  function openTopic(topicId) {
-    // Просто заменяем ID в шаблоне
-    const url = TOPIC_URL_TEMPLATE.replace('9999', topicId);
-    window.location.href = url;
-  }
-
-  // Обработчик изменения размера окна
-  window.addEventListener('resize', () => {
-    const activeIndex = Array.from(sidebarItems).findIndex(item => 
-      item.classList.contains('active')
-    );
-    if (activeIndex !== -1 && chaptersData[activeIndex]) {
-      renderTopics(activeIndex);
-    }
-  });
-
-  // Инициализация
-  if (chaptersData.length > 0) {
-    renderTopics(0);
-  }
+    // Обработчик изменения размера окна
+    window.addEventListener('resize', () => {
+        const activeIndex = Array.from(sidebarItems).findIndex(item => 
+            item.classList.contains('active')
+        );
+        if (activeIndex !== -1 && chaptersData[activeIndex]) {
+            renderTopics(activeIndex);
+        }
+    });
 </script>
-{% endblock content %}
+{% endblock %}
