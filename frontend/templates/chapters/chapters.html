@@ -5,7 +5,7 @@
 
 {% block extra_css %}
 <style>
-    /* Основной контейнер страницы глав */
+        /* Основной контейнер страницы глав */
     .chapters-main-container {
         max-width: 1400px;
         margin: 0 auto;
@@ -77,7 +77,7 @@
         padding: 25px;
         border: 1px solid var(--color-border-primary);
         box-shadow: var(--shadow-md);
-        max-height: calc(100vh - 200px);
+        /* max-height: calc(100vh - 200px); */
         overflow-y: auto;
     }
 
@@ -740,15 +740,19 @@
                 id: {{ chapter.id }},
                 title: "{{ chapter.title|escapejs }}",
                 description: "{{ chapter.description|escapejs|default:'' }}",
+                totalReadingTime: {{ chapter.total_reading_time|default:0 }},
+                totalTopics: {{ chapter.total_topics_count|default:0 }},
                 topics: [
-                    {% for topic in chapter.topics.all %}
+                    {% for topic in chapter.published_topics %}
                         {
                             id: {{ topic.id }},
                             title: "{{ topic.title|escapejs }}",
                             description: "{{ topic.description|escapejs|default:'' }}",
                             order: {{ topic.order }},
-                            difficulty: "{{ topic.difficulty|default:'Easy'|escapejs }}",
-                            contentLength: {{ topic.content|length|default:0 }},
+                            difficulty: "{{ topic.difficulty|default:'easy'|escapejs }}",
+                            difficultyDisplay: "{{ topic.get_difficulty_display|default:'Easy'|escapejs }}",
+                            estimated_minutes: {{ topic.estimated_minutes }},
+                            is_free: {% if topic.is_free %}true{% else %}false{% endif %},
                             isCompleted: localStorage.getItem(`topic_${ {{ topic.id }} }_completed`) === 'true'
                         }{% if not forloop.last %},{% endif %}
                     {% endfor %}
@@ -768,6 +772,7 @@
     const totalCount = document.getElementById("totalCount");
     const estimatedTime = document.getElementById("estimatedTime");
     const showAllBtn = document.getElementById("showAllBtn");
+    const chapterDifficulty = document.getElementById("chapter-difficulty");
 
     // Загрузка прогресса пользователя
     function loadUserProgress() {
@@ -791,6 +796,30 @@
         localStorage.setItem('completed_topics', JSON.stringify(completedTopics));
     }
 
+    // Расчет средней сложности главы
+    function calculateChapterDifficulty(topics) {
+        if (!topics || topics.length === 0) return 'Mixed';
+        
+        const difficultyWeights = {
+            'easy': 1,
+            'medium': 2,
+            'hard': 3
+        };
+        
+        let totalWeight = 0;
+        topics.forEach(topic => {
+            totalWeight += difficultyWeights[topic.difficulty] || 1;
+        });
+        
+        const averageWeight = totalWeight / topics.length;
+        
+        if (averageWeight >= 2.5) return 'Hard';
+        if (averageWeight >= 1.5) return 'Medium';
+        if (topics.length === 1) return topics[0].difficultyDisplay;
+        
+        return 'Mixed';
+    }
+
     // Обновление прогресса главы
     function updateChapterProgress(chapterIndex) {
         const chapter = chaptersData[chapterIndex];
@@ -811,11 +840,11 @@
         completedCount.textContent = completed;
         totalCount.textContent = total;
         
-        // Расчет времени
-        const totalMinutes = chapterTopics.reduce((sum, topic) => sum + Math.max(1, Math.floor(topic.contentLength / 1000)), 0);
+        // Расчет времени на основе estimated_minutes
+        const totalMinutes = chapterTopics.reduce((sum, topic) => sum + topic.estimated_minutes, 0);
         const remainingMinutes = chapterTopics
             .filter(topic => !completedTopics.has(topic.id))
-            .reduce((sum, topic) => sum + Math.max(1, Math.floor(topic.contentLength / 1000)), 0);
+            .reduce((sum, topic) => sum + topic.estimated_minutes, 0);
         
         estimatedTime.textContent = `Est. time: ${remainingMinutes} min`;
         
@@ -837,6 +866,11 @@
             currentChapterDescription.textContent = chapter.description || "Explore topics in this chapter to build your Python skills.";
         }
         
+        // Обновляем сложность главы
+        if (chapterDifficulty) {
+            chapterDifficulty.textContent = calculateChapterDifficulty(chapter.topics);
+        }
+        
         // Обновляем активный элемент в сайдбаре
         sidebarItems.forEach((item, i) => {
             item.classList.toggle("active", i === index);
@@ -847,7 +881,7 @@
             topicsContainer.innerHTML = `
                 <div class="no-topics">
                     <i class="bi bi-file-earmark-text"></i>
-                    <p>No topics in this chapter yet</p>
+                    <p>We're going to add some topics</p>
                     <p class="text-secondary">Check back soon for updates!</p>
                 </div>
             `;
@@ -859,7 +893,6 @@
         
         chapter.topics.forEach((topic, topicIndex) => {
             const isCompleted = completedTopics.has(topic.id);
-            const minutes = Math.max(1, Math.floor(topic.contentLength / 1000));
             
             const card = document.createElement("div");
             card.className = `topic-card ${isCompleted ? 'completed' : ''}`;
@@ -875,34 +908,41 @@
             
             card.innerHTML = `
                 <div class="topic-card-header">
-                    <span class="topic-number">Topic ${topic.order}</span>
-                    ${topic.difficulty ? `
-                        <span class="topic-difficulty difficulty-${topic.difficulty.toLowerCase()}">
-                            ${topic.difficulty}
-                        </span>
-                    ` : ''}
-                    ${isCompleted ? `
-                        <span class="topic-completed">
-                            <i class="bi bi-check-circle-fill" style="color: var(--color-accent-primary);"></i>
-                        </span>
-                    ` : ''}
+                    <div class="topic-card-header-left">
+                        <span class="topic-number">Topic ${topic.order}</span>
+                        ${topic.difficulty ? `
+                            <span class="topic-difficulty difficulty-${topic.difficulty}">
+                                ${topic.difficultyDisplay}
+                            </span>
+                        ` : ''}
+                    </div>
+                    <div class="topic-card-header-right">
+                        ${topic.is_free ? `
+                            <span class="topic-access access-free">
+                                <i class="bi bi-unlock-fill" style="color: var(--color-text-secondary);"></i> Free
+                            </span>
+                        ` : `
+                            <span class="topic-access access-premium">
+                                <i class="bi bi-star-fill" style="color: #ffc107;"></i> Premium
+                            </span>
+                        `}
+                    </div>
                 </div>
-                
                 <h3 class="topic-title">${topic.title}</h3>
-                
                 <p class="topic-description">
                     ${topic.description || "Learn essential concepts and practice with examples."}
                 </p>
-                
                 <div class="topic-meta">
                     <span class="topic-meta-item">
                         <i class="bi bi-clock"></i>
-                        ${minutes} min
+                        ${topic.estimated_minutes} min
                     </span>
-                    <span class="topic-meta-item">
-                        <i class="bi bi-code-slash"></i>
-                        Exercises
-                    </span>
+                    ${topic.has_exercises ? `
+                        <span class="topic-meta-item">
+                            <i class="bi bi-code-slash"></i>
+                            Exercises
+                        </span>
+                    ` : ''}
                     ${isCompleted ? `
                         <span class="topic-meta-item">
                             <i class="bi bi-check-circle" style="color: var(--color-accent-primary);"></i>
@@ -960,22 +1000,30 @@
         const savedChapterIndex = localStorage.getItem('current_chapter_index');
         const initialIndex = savedChapterIndex ? parseInt(savedChapterIndex) : 0;
         
+        // Отладочная информация
+        console.log('Chapters data:', chaptersData);
+        if (chaptersData.length > 0 && chaptersData[0].topics.length > 0) {
+            console.log('First topic data:', chaptersData[0].topics[0]);
+        }
+        
         if (chaptersData.length > 0) {
             // Рендерим начальную главу
             renderTopics(initialIndex);
             
             // Обновляем кнопку "Показать все"
-            showAllBtn.href = "#chapters-list";
-            showAllBtn.style.display = 'inline-flex';
-            
-            // Добавляем обработчик для кнопки
-            showAllBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                document.querySelector('.chapters-sidebar').scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
+            if (showAllBtn) {
+                showAllBtn.href = "#chapters-list";
+                showAllBtn.style.display = 'inline-flex';
+                
+                // Добавляем обработчик для кнопки
+                showAllBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelector('.chapters-sidebar').scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
                 });
-            });
+            }
             
             // Добавляем хоткеи
             document.addEventListener('keydown', function(e) {

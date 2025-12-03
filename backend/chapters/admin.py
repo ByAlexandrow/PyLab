@@ -20,11 +20,12 @@ class ChapterAdmin(admin.ModelAdmin):
 class TopicAdmin(admin.ModelAdmin):
     fields = (
         'title', 'description', 'chapter',
-        'content', 'order', 'is_published'
+        'content', 'order', 'is_published',
+        'difficulty', 'estimated_minutes',
+        'is_free'
     )
-    list_display = ('title', 'chapter', 'order', 'is_published')
-    search_fields = ('title', 'chapter', 'order')
-    list_filter = ('chapter', 'is_published')
+    list_display = ('title', 'chapter', 'difficulty', 'order', 'is_published')
+    search_fields = ('title', 'chapter', 'difficulty', 'order')
+    list_filter = ('chapter', 'difficulty', 'is_published')
     ordering = ('order',)
     list_per_page = 15
-

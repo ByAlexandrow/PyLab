@@ -465,32 +465,31 @@
 {% block content %}
 <div class="topic-wrapper">
     <div class="topic-container">
+
         <!-- Прогресс чтения -->
         <div class="reading-progress">
             <div class="reading-progress-bar" id="readingProgress"></div>
         </div>
-        
+
         <!-- Заголовок темы -->
         <h1 class="topic-title">{{ topic.title }}</h1>
-        
+
         <!-- Мета-информация -->
         <div class="topic-meta">
             <span class="topic-chapter">
                 <i class="bi bi-book"></i>
                 Chapter: {{ topic.chapter.title }}
             </span>
-            <span class="topic-order">
+            <!-- <span class="topic-order">
                 <i class="bi bi-list-ol"></i>
                 Topic №{{ topic.order }}
-            </span>
+            </span> -->
             <span class="topic-time">
                 <i class="bi bi-clock"></i>
-                {% with word_count=topic.content|wordcount %}
-                    {{ word_count|add:word_count|add:word_count|divisibleby:200|default:5 }} min read
-                {% endwith %}
+                {{ topic.estimated_minutes }} min
             </span>
         </div>
-        
+
         <!-- Основное содержание -->
         <div class="topic-content">
             {% if topic.content %}
@@ -506,36 +505,35 @@
                 </div>
             {% endif %}
         </div>
-        
+
         <!-- Навигация между темами -->
         <div class="topic-navigation">
-            {% if previous_topic %}
-                <a href="{% url 'chapters:topic' previous_topic.id %}" class="nav-btn prev">
+            
+                <a href="" class="nav-btn prev">
                     <i class="bi bi-chevron-left"></i>
-                    Previous
+                    Prev
                 </a>
-            {% endif %}
+            
             
             <a href="" class="nav-btn chapters">
                 <i class="bi bi-list-ul"></i>
                 Chapter Topics
             </a>
             
-            {% if next_topic %}
-                <a href="{% url 'chapters:topic' next_topic.id %}" class="nav-btn next">
+            
+                <a href="" class="nav-btn next">
                     Next
                     <i class="bi bi-chevron-right"></i>
                 </a>
-            {% endif %}
+            
         </div>
-        
+
         <!-- Практические материалы -->
         <div class="practical-materials">
             <h3 class="materials-title">
                 <i class="bi bi-rocket-takeoff"></i>
                 Practice & Apply
             </h3>
-            
             <div class="materials-grid">
                 <a href="" class="material-card tests">
                     <div class="material-icon">
@@ -543,26 +541,12 @@
                     </div>
                     <div class="material-content">
                         <h4>Tests</h4>
-                        <p>Check your understanding with interactive tests</p>
+                        <p>Check your understanding</p>
                     </div>
                     <div class="material-arrow">
                         <i class="bi bi-arrow-right"></i>
                     </div>
                 </a>
-                
-                <a href="" class="material-card exercises">
-                    <div class="material-icon">
-                        <i class="bi bi-code-slash"></i>
-                    </div>
-                    <div class="material-content">
-                        <h4>Exercises</h4>
-                        <p>Practice coding with hands-on exercises</p>
-                    </div>
-                    <div class="material-arrow">
-                        <i class="bi bi-arrow-right"></i>
-                    </div>
-                </a>
-                
                 <a href="" class="material-card projects">
                     <div class="material-icon">
                         <i class="bi bi-kanban"></i>
@@ -575,10 +559,22 @@
                         <i class="bi bi-arrow-right"></i>
                     </div>
                 </a>
+                <a href="" class="material-card exercises">
+                    <div class="material-icon">
+                        <i class="bi bi-code-slash"></i>
+                    </div>
+                    <div class="material-content">
+                        <h4>Tasks</h4>
+                        <p>Practice coding with hands-on exercises</p>
+                    </div>
+                    <div class="material-arrow">
+                        <i class="bi bi-arrow-right"></i>
+                    </div>
+                </a>
             </div>
         </div>
     </div>
-    
+
     <!-- Кнопка "Наверх" -->
     <a href="#" class="back-to-top" id="backToTop">
         <i class="bi bi-chevron-up"></i>

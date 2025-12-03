@@ -1,24 +1,39 @@
-from django.shortcuts import render
-from django.http import Http404
+from django.shortcuts import render, get_object_or_404
+from django.db.models import Count, Sum, Prefetch
 
 from chapters.models import Chapter, Topic
 
 
 def chapters(request):
-    """Showing of all chapters with their topics."""
-    chapters = Chapter.objects.filter(is_published=True).prefetch_related('topics').order_by('order')
-    return render(request, 'chapters/chapters.html', {'chapters': chapters})
-
+    """Отображение списка глав с топиками."""
+    # Фильтруем опубликованные главы
+    chapters = Chapter.objects.filter(is_published=True).prefetch_related(
+        Prefetch(
+            'topics',
+            queryset=Topic.objects.filter(is_published=True).order_by('order'),
+            to_attr='published_topics'
+        )
+    ).order_by('order')
+    
+    # Считаем общую статистику
+    total_topics = sum(len(chapter.published_topics) for chapter in chapters)
+    
+    context = {
+        'chapters': chapters,
+        'total_topics': total_topics,
+    }
+    return render(request, 'chapters/chapters.html', context)
 
 def topic(request, id):
-    """Showing one particular topic."""
-    try:
-        topic = Topic.objects.select_related('chapter').get(
-            pk=id, 
-            is_published=True,
-            chapter__is_published=True
-        )
-    except Topic.DoesNotExist:
-        raise Http404("There is no topic(")
+    """Детальное отображение топика."""
+    topic = get_object_or_404(
+        Topic.objects.select_related('chapter'),
+        id=id,
+        is_published=True
+    )
     
-    return render(request, 'chapters/topic.html', {'topic': topic})
+    context = {
+        'topic': topic,
+        'chapter': topic.chapter,
+    }
+    return render(request, 'chapters/topic.html', context)
