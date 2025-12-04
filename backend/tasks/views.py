@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.views.generic import TemplateView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-def tasks(request):
-    """Showing of all chapters with their topics."""
-    return render(request, 'tasks/tasks.html',)
+class TasksView(LoginRequiredMixin, TemplateView):
+    """."""
+    template_name = 'tasks/tasks.html'

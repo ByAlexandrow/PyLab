@@ -33,7 +33,7 @@
             <!-- Логотип -->
             <div class="header-logo">
                 <a href="/" class="logo-link">
-                    <img src="/static/img/logo/logo_100.png" alt="PyLab Logo" class="logo-image" />
+                    <img src="/static/img/logo/logo.png" alt="PyLab Logo" class="logo-image" />
                     <div class="logo-text">
                         <span class="logo-primary">PyLab</span>
                         <span class="logo-subtitle">Learn Python</span>
@@ -58,15 +58,15 @@
                             <i class="bi bi-chevron-down dropdown-icon"></i>
                         </a>
                         <div class="dropdown-menu">
-                            <a href="" class="dropdown-item">
+                            <a href="/tests/tests/" class="dropdown-item">
                                 <i class="bi bi-question-circle"></i>
                                 Tests
                             </a>
-                            <a href="" class="dropdown-item">
+                            <a href="/projects/projects/" class="dropdown-item">
                                 <i class="bi bi-kanban"></i>
                                 Projects
                             </a>
-                            <a href="" class="dropdown-item">
+                            <a href="/tasks/tasks/" class="dropdown-item">
                                 <i class="bi bi-code-slash"></i>
                                 Tasks
                             </a>
@@ -136,13 +136,13 @@
                         <!-- Профиль пользователя -->
                         <div class="profile-dropdown">
                             <button class="profile-btn" aria-label="User profile">
-                                <img src="/static/img/user/face.jpg" alt="User avatar" class="profile-avatar" />
+                                <img src="/static/img/user/avatar.jpg" alt="User avatar" class="profile-avatar" />
                                 <span class="profile-name">{{ user.username }}</span>
                                 <i class="bi bi-chevron-down"></i>
                             </button>
                             <div class="profile-menu">
                                 <div class="profile-info">
-                                    <img src="/static/img/user/face.jpg" alt="User avatar" />
+                                    <img src="/static/img/user/avatar.jpg" alt="User avatar" />
                                     <div class="profile-details">
                                         <strong>{{ user.username }}</strong>
                                         <small>{{ user.email }}</small>
@@ -153,9 +153,9 @@
                                         <i class="bi bi-person"></i>
                                         My Profile
                                     </a>
-                                    <a href="/users/progress/" class="profile-item">
-                                        <i class="bi bi-graph-up"></i>
-                                        My Progress
+                                    <a href="/users/premium/" class="profile-item">
+                                        <i class="bi bi-star"></i>
+                                        Premium
                                     </a>
                                     <a href="/users/settings/" class="profile-item">
                                         <i class="bi bi-gear"></i>
@@ -201,7 +201,7 @@
     <nav class="mobile-nav">
         <div class="mobile-nav-header">
             <div class="mobile-logo">
-                <img src="/static/img/logo/logo_100.png" alt="PyLab Logo" />
+                <img src="/static/img/logo/logo.png" alt="PyLab Logo" />
                 <span>PyLab</span>
             </div>
             <button class="mobile-close" aria-label="Close menu">
