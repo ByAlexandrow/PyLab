@@ -1,637 +1,44 @@
 {% extends "base.html" %}
-{% load static %}
-
 {% block title %}PyLab - Chapters{% endblock %}
-
-{% block extra_css %}
-<style>
-        /* Основной контейнер страницы глав */
-    .chapters-main-container {
-        max-width: 1400px;
-        margin: 0 auto;
-        
-        min-height: calc(100vh - 200px);
-        animation: fadeInUp 0.5s ease;
-    }
-
-    /* Заголовок страницы */
-    .chapters-header {
-        text-align: center;
-        margin-top: 30px;
-        margin-bottom: 100px;
-        position: relative;
-    }
-
-    .chapters-title {
-        font-size: 3.2rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 15px;
-        letter-spacing: -1px;
-    }
-
-    .chapters-subtitle {
-        font-size: 1.2rem;
-        color: var(--color-text-secondary);
-        max-width: 600px;
-        margin: 0 auto;
-        line-height: 1.6;
-    }
-
-    .chapters-header::after {
-        content: '';
-        position: absolute;
-        bottom: -20px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100px;
-        height: 4px;
-        background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary));
-        border-radius: 2px;
-    }
-
-    /* Обертка контента */
-    .chapters-content-wrapper {
-        display: flex;
-        gap: 40px;
-        align-items: flex-start;
-        margin-top: 30px;
-    }
-
-    /* Сайдбар */
-    .chapters-sidebar-container {
-        width: 320px;
-        flex-shrink: 0;
-        position: sticky;
-        top: 120px;
-        align-self: flex-start;
-    }
-
-    .chapters-sidebar {
-        width: 100%;
-        background: var(--color-bg-secondary);
-        border-radius: var(--radius-xl);
-        padding: 25px;
-        border: 1px solid var(--color-border-primary);
-        box-shadow: var(--shadow-md);
-        /* max-height: calc(100vh - 200px); */
-        overflow-y: auto;
-    }
-
-    .chapters-sidebar::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    .chapters-sidebar::-webkit-scrollbar-track {
-        background: var(--color-bg-primary);
-        border-radius: 3px;
-    }
-
-    .chapters-sidebar::-webkit-scrollbar-thumb {
-        background: var(--color-border-primary);
-        border-radius: 3px;
-    }
-
-    .chapters-sidebar::-webkit-scrollbar-thumb:hover {
-        background: var(--color-accent-primary);
-    }
-
-    .sidebar-header {
-        margin-bottom: 25px;
-        padding-bottom: 15px;
-        border-bottom: 2px solid var(--color-border-primary);
-    }
-
-    .sidebar-title {
-        font-size: 1.3rem;
-        color: var(--color-text-light);
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .sidebar-title i {
-        color: var(--color-accent-primary);
-    }
-
-    .sidebar-stats {
-        font-size: 0.9rem;
-        color: var(--color-text-secondary);
-        margin-top: 8px;
-    }
-
-    .sidebar-stats strong {
-        color: var(--color-accent-primary);
-    }
-
-    #chapters-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    #chapters-list li {
-        padding: 16px 20px;
-        margin-bottom: 10px;
-        background: var(--color-bg-primary);
-        border: 1px solid var(--color-border-primary);
-        border-radius: var(--radius-lg);
-        color: var(--color-text-primary);
-        cursor: pointer;
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    #chapters-list li::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        width: 4px;
-        background: var(--color-accent-primary);
-        transform: scaleX(0);
-        transition: transform 0.3s ease;
-    }
-
-    #chapters-list li:hover {
-        background: var(--color-bg-hover);
-        transform: translateX(5px);
-        border-color: var(--color-accent-primary);
-    }
-
-    #chapters-list li:hover::before {
-        transform: scaleX(1);
-    }
-
-    #chapters-list li.active {
-        background: linear-gradient(135deg, rgba(126, 231, 135, 0.15), rgba(86, 211, 100, 0.1));
-        border-color: var(--color-accent-primary);
-        color: var(--color-accent-primary);
-        font-weight: 600;
-        box-shadow: 0 4px 15px rgba(126, 231, 135, 0.1);
-    }
-
-    #chapters-list li.active::before {
-        transform: scaleX(1);
-        background: var(--color-accent-secondary);
-    }
-
-    #chapters-list li i {
-        font-size: 1.1rem;
-        color: var(--color-accent-primary);
-        transition: transform 0.3s ease;
-    }
-
-    #chapters-list li:hover i {
-        transform: rotate(15deg);
-    }
-
-    #chapters-list li.active i {
-        color: var(--color-accent-secondary);
-    }
-
-    /* Секция топиков */
-    .topics-section {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .section-header {
-        margin-bottom: 0px;
-        padding-bottom: 20px;
-        border-bottom: 2px solid var(--color-border-primary);
-    }
-
-    .section-title {
-        font-size: 1.8rem;
-        color: var(--color-text-light);
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        margin-bottom: 10px;
-    }
-
-    .section-title i {
-        color: var(--color-accent-primary);
-        font-size: 1.5rem;
-    }
-
-    .current-chapter {
-        background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        font-weight: 700;
-        margin-left: 10px;
-    }
-
-    .chapter-description {
-        color: var(--color-text-secondary);
-        font-size: 1rem;
-        line-height: 1.6;
-        max-width: 800px;
-    }
-
-    /* Сетка топиков */
-    .topics-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 25px;
-        margin-bottom: 40px;
-    }
-
-    .topic-card {
-        background: var(--color-bg-secondary);
-        border: 1px solid var(--color-border-primary);
-        border-radius: var(--radius-lg);
-        padding: 25px;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        animation: fadeInUp 0.5s ease;
-        animation-fill-mode: both;
-        height: 100%;
-    }
-
-    .topic-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary));
-        transform: scaleX(0);
-        transition: transform 0.3s ease;
-    }
-
-    .topic-card:hover {
-        transform: translateY(-8px);
-        border-color: var(--color-accent-primary);
-        box-shadow: var(--shadow-lg);
-    }
-
-    .topic-card:hover::before {
-        transform: scaleX(1);
-    }
-
-    .topic-card-header {
-        margin-bottom: 15px;
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-    }
-
-    .topic-number {
-        font-size: 0.9rem;
-        color: var(--color-accent-primary);
-        background: rgba(126, 231, 135, 0.1);
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-weight: 600;
-        border: 1px solid rgba(126, 231, 135, 0.2);
-    }
-
-    .topic-difficulty {
-        font-size: 0.8rem;
-        padding: 4px 10px;
-        border-radius: 12px;
-        font-weight: 500;
-    }
-
-    .difficulty-easy {
-        background: rgba(126, 231, 135, 0.1);
-        color: var(--color-accent-primary);
-        border: 1px solid rgba(126, 231, 135, 0.2);
-    }
-
-    .difficulty-medium {
-        background: rgba(255, 211, 77, 0.1);
-        color: #ffd34d;
-        border: 1px solid rgba(255, 211, 77, 0.2);
-    }
-
-    .difficulty-hard {
-        background: rgba(248, 81, 73, 0.1);
-        color: #f85149;
-        border: 1px solid rgba(248, 81, 73, 0.2);
-    }
-
-    .topic-title {
-        font-size: 1.3rem;
-        color: var(--color-text-light);
-        font-weight: 600;
-        margin-bottom: 10px;
-        line-height: 1.4;
-        flex: 1;
-    }
-
-    .topic-description {
-        color: var(--color-text-secondary);
-        font-size: 0.95rem;
-        line-height: 1.5;
-        margin-bottom: 20px;
-        flex: 1;
-    }
-
-    .topic-meta {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        margin-top: auto;
-        padding-top: 15px;
-        border-top: 1px solid var(--color-border-primary);
-        font-size: 0.85rem;
-        color: var(--color-text-secondary);
-    }
-
-    .topic-meta-item {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .topic-meta-item i {
-        color: var(--color-accent-primary);
-        font-size: 0.9rem;
-    }
-
-    /* Кнопка "Показать все" */
-    .show-all-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        padding: 12px 25px;
-        background: var(--color-accent-primary);
-        color: var(--color-bg-primary);
-        border: none;
-        border-radius: var(--radius-md);
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        margin-top: 20px;
-    }
-
-    .show-all-btn:hover {
-        background: var(--color-accent-secondary);
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
-        text-decoration: none;
-    }
-
-    .show-all-btn i {
-        transition: transform 0.3s ease;
-    }
-
-    .show-all-btn:hover i {
-        transform: translateX(5px);
-    }
-
-    /* Прогресс главы */
-    .chapter-progress {
-        background: var(--color-bg-tertiary);
-        border-radius: var(--radius-lg);
-        padding: 20px;
-        margin-top: 20px;
-        margin-bottom: 20px;
-        border: 1px solid var(--color-border-primary);
-    }
-
-    .progress-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
-    }
-
-    .progress-title {
-        font-size: 1.1rem;
-        color: var(--color-text-light);
-        font-weight: 600;
-    }
-
-    .progress-percentage {
-        color: var(--color-accent-primary);
-        font-weight: 700;
-        font-size: 1.2rem;
-    }
-
-    .progress-bar {
-        height: 8px;
-        background: var(--color-border-primary);
-        border-radius: 4px;
-        overflow: hidden;
-        margin-bottom: 10px;
-    }
-
-    .progress-fill {
-        height: 100%;
-        background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary));
-        border-radius: 4px;
-        transition: width 0.5s ease;
-    }
-
-    .progress-stats {
-        display: flex;
-        justify-content: space-between;
-        font-size: 0.9rem;
-        color: var(--color-text-secondary);
-    }
-
-    /* Пустые состояния */
-    .no-chapters,
-    .no-topics {
-        text-align: center;
-        padding: 60px 20px;
-        background: var(--color-bg-secondary);
-        border-radius: var(--radius-lg);
-        border: 2px dashed var(--color-border-primary);
-    }
-
-    .no-chapters i,
-    .no-topics i {
-        font-size: 3rem;
-        color: var(--color-text-secondary);
-        margin-bottom: 20px;
-        opacity: 0.5;
-    }
-
-    .no-chapters p,
-    .no-topics p {
-        color: var(--color-text-secondary);
-        font-size: 1.1rem;
-        margin-bottom: 10px;
-    }
-
-    .no-chapters .btn,
-    .no-topics .btn {
-        margin-top: 20px;
-    }
-
-    /* Анимация появления карточек */
-    .topic-card:nth-child(1) { animation-delay: 0.1s; }
-    .topic-card:nth-child(2) { animation-delay: 0.2s; }
-    .topic-card:nth-child(3) { animation-delay: 0.3s; }
-    .topic-card:nth-child(4) { animation-delay: 0.4s; }
-    .topic-card:nth-child(5) { animation-delay: 0.5s; }
-    .topic-card:nth-child(6) { animation-delay: 0.6s; }
-    .topic-card:nth-child(7) { animation-delay: 0.7s; }
-    .topic-card:nth-child(8) { animation-delay: 0.8s; }
-    .topic-card:nth-child(9) { animation-delay: 0.9s; }
-    .topic-card:nth-child(10) { animation-delay: 1.0s; }
-
-    /* Адаптивность */
-    @media (max-width: 1200px) {
-        .chapters-content-wrapper {
-            gap: 30px;
-        }
-        
-        .chapters-sidebar-container {
-            width: 280px;
-        }
-        
-        .topics-container {
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        }
-    }
-
-    @media (max-width: 992px) {
-        .chapters-content-wrapper {
-            flex-direction: column;
-        }
-        
-        .chapters-sidebar-container {
-            width: 100%;
-            position: static;
-        }
-        
-        .chapters-sidebar {
-            max-height: none;
-        }
-        
-        .topics-container {
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        }
-    }
-
-    @media (max-width: 768px) {
-        .chapters-main-container {
-            padding: 20px 15px;
-        }
-        
-        .chapters-title {
-            font-size: 2.5rem;
-        }
-        
-        .chapters-subtitle {
-            font-size: 1.1rem;
-        }
-        
-        .topics-container {
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-        }
-        
-        .topic-card {
-            padding: 20px;
-        }
-        
-        .topic-title {
-            font-size: 1.2rem;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .chapters-title {
-            font-size: 2rem;
-        }
-        
-        .topics-container {
-            grid-template-columns: 1fr;
-        }
-        
-        .section-title {
-            font-size: 1.5rem;
-        }
-        
-        #chapters-list li {
-            padding: 14px 16px;
-        }
-        
-        .topic-meta {
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-    }
-
-    @media (max-width: 400px) {
-        .chapters-title {
-            font-size: 1.8rem;
-        }
-        
-        .topic-card {
-            padding: 18px;
-        }
-    }
-</style>
-{% endblock %}
-
 {% block content %}
-<div class="chapters-main-container">
+<div class="chapters">
     <!-- Заголовок страницы -->
-    <header class="chapters-header">
-        <h1 class="chapters-title">Learning Path</h1>
-        <p class="chapters-subtitle">
+    <header class="chapters__header">
+        <h1 class="chapters__title">Learning Path</h1>
+        <p class="chapters__subtitle">
             Master Python step by step through structured chapters and practical exercises. 
             Start from basics and progress to advanced topics.
         </p>
     </header>
 
     <!-- Обертка контента -->
-    <div class="chapters-content-wrapper">
+    <div class="chapters__content">
         <!-- Сайдбар с главами -->
-        <aside class="chapters-sidebar-container">
-            <nav class="chapters-sidebar">
-                <div class="sidebar-header">
-                    <h3 class="sidebar-title">
-                        <i class="bi bi-journals"></i>
+        <aside class="sidebar">
+            <nav class="sidebar__panel">
+                <div class="sidebar__header">
+                    <h3 class="sidebar__title">
+                        <i class="sidebar__title-icon bi bi-journals"></i>
                         All Chapters
                     </h3>
-                    <div class="sidebar-stats">
-                        <strong>{{ chapters|length }}</strong> chapters • 
-                        <strong>{{ total_topics }}</strong> topics
+                    <div class="sidebar__stats">
+                        <strong class="sidebar__stats-accent">{{ chapters|length }}</strong> chapters • 
+                        <strong class="sidebar__stats-accent">{{ total_topics }}</strong> topics
                     </div>
                 </div>
                 
-                <ul id="chapters-list">
+                <ul class="sidebar__list">
                     {% for chapter in chapters %}
-                        <li 
-                            {% if forloop.first %}class="active"{% endif %} 
+                        <li class="sidebar__item {% if forloop.first %}sidebar__item--active{% endif %}" 
                             onclick="selectChapter({{ forloop.counter0 }})"
-                            data-chapter-id="{{ chapter.id }}"
-                        >
-                            <i class="bi bi-book"></i>
-                            <span class="chapter-title">{{ chapter.title }}</span>
+                            data-chapter-id="{{ chapter.id }}">
+                            <i class="sidebar__item-icon bi bi-book"></i>
+                            <span class="sidebar__item-text">{{ chapter.title }}</span>
                         </li>
                     {% empty %}
-                        <li class="no-chapters">
-                            <i class="bi bi-journal-x"></i>
-                            <p>No chapters available yet</p>
+                        <li class="empty-state empty-state--compact">
+                            <i class="empty-state__icon bi bi-journal-x"></i>
+                            <p class="empty-state__message">No chapters available yet</p>
                         </li>
                     {% endfor %}
                 </ul>
@@ -641,32 +48,32 @@
         <!-- Основной контент -->
         <main class="topics-section">
             <!-- Заголовок текущей главы -->
-            <div class="section-header">
-                <h2 class="section-title">
-                    <i class="bi bi-list-task"></i>
+            <div class="topics-section__header">
+                <h2 class="topics-section__title">
+                    <i class="topics-section__title-icon bi bi-list-task"></i>
                     Topics:
-                    <span id="current-chapter-title" class="current-chapter">
+                    <span id="current-chapter-title" class="topics-section__chapter-name">
                         {% if chapters.0 %}{{ chapters.0.title }}{% endif %}
                     </span>
                 </h2>
                 
                 {% if chapters.0 %}
-                    <p class="chapter-description" id="current-chapter-description">
+                    <p class="topics-section__description" id="current-chapter-description">
                         {{ chapters.0.description|default:"Explore topics in this chapter to build your Python skills." }}
                     </p>
                 {% endif %}
             </div>
 
             <!-- Прогресс главы -->
-            <div class="chapter-progress" id="chapterProgress" style="display: none;">
-                <div class="progress-header">
-                    <div class="progress-title">Chapter Progress</div>
-                    <div class="progress-percentage">0%</div>
+            <div class="progress" id="chapterProgress" style="display: none;">
+                <div class="progress__header">
+                    <div class="progress__title">Chapter Progress</div>
+                    <div class="progress__percentage">0%</div>
                 </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
+                <div class="progress__bar">
+                    <div class="progress__fill" id="progressFill"></div>
                 </div>
-                <div class="progress-stats">
+                <div class="progress__stats">
                     <span>Completed: <strong id="completedCount">0</strong> of <strong id="totalCount">0</strong></span>
                     <span id="estimatedTime">Est. time: --</span>
                 </div>
@@ -676,42 +83,43 @@
             <div class="topics-container" id="topics-container">
                 {% if chapters.0 %}
                     {% for topic in chapters.0.topics.all %}
-                        <div class="topic-card" onclick="openTopic({{ topic.id }})" 
-                             data-topic-id="{{ topic.id }}"
-                             data-topic-order="{{ topic.order }}">
-                            <div class="topic-card-header">
-                                <span class="topic-number">Topic {{ topic.order }}</span>
+                        <a href="" 
+                           class="topic-card {% if topic.is_completed %}topic-card--completed{% endif %}" 
+                           data-topic-id="{{ topic.id }}"
+                           data-topic-order="{{ topic.order }}">
+                            <div class="topic-card__header">
+                                <span class="topic-card__number">Topic {{ topic.order }}</span>
                                 {% if topic.difficulty %}
-                                    <span class="topic-difficulty difficulty-{{ topic.difficulty|lower }}">
+                                    <span class="topic-card__difficulty topic-card__difficulty--{{ topic.difficulty|lower }}">
                                         {{ topic.difficulty }}
                                     </span>
                                 {% endif %}
                             </div>
                             
-                            <h3 class="topic-title">{{ topic.title }}</h3>
+                            <h3 class="topic-card__title">{{ topic.title }}</h3>
                             
-                            <p class="topic-description">
+                            <p class="topic-card__description">
                                 {{ topic.description|default:"Learn essential concepts and practice with examples." }}
                             </p>
                             
-                            <div class="topic-meta">
-                                <span class="topic-meta-item">
-                                    <i class="bi bi-clock"></i>
+                            <div class="topic-card__meta">
+                                <span class="topic-card__meta-item">
+                                    <i class="topic-card__meta-icon bi bi-clock"></i>
                                     {% with word_count=topic.content|wordcount|default:300 %}
                                         {% widthratio word_count 200 1 as minutes %}
                                         {{ minutes|add:"1" }} min
                                     {% endwith %}
                                 </span>
-                                <span class="topic-meta-item">
-                                    <i class="bi bi-code-slash"></i>
+                                <span class="topic-card__meta-item">
+                                    <i class="topic-card__meta-icon bi bi-code-slash"></i>
                                     Exercises
                                 </span>
                             </div>
-                        </div>
+                        </a>
                     {% empty %}
-                        <div class="no-topics">
-                            <i class="bi bi-file-earmark-text"></i>
-                            <p>No topics in this chapter yet</p>
+                        <div class="empty-state">
+                            <i class="empty-state__icon bi bi-file-earmark-text"></i>
+                            <p class="empty-state__message">No topics in this chapter yet</p>
                             <p class="text-secondary">Check back soon for updates!</p>
                         </div>
                     {% endfor %}
@@ -719,9 +127,9 @@
             </div>
 
             <!-- Кнопка для навигации -->
-            <a href="#" class="show-all-btn" id="showAllBtn" style="display: none;">
+            <a href="#" class="chapters__btn" id="showAllBtn" style="display: none;">
                 <span>View All Chapters</span>
-                <i class="bi bi-arrow-right"></i>
+                <i class="chapters__btn-icon bi bi-arrow-right"></i>
             </a>
         </main>
     </div>
@@ -761,18 +169,17 @@
         {% endfor %}
     ];
 
-    const sidebarItems = document.querySelectorAll("#chapters-list li");
+    const sidebarItems = document.querySelectorAll(".sidebar__item");
     const topicsContainer = document.getElementById("topics-container");
     const currentChapterTitle = document.getElementById("current-chapter-title");
     const currentChapterDescription = document.getElementById("current-chapter-description");
     const chapterProgress = document.getElementById("chapterProgress");
     const progressFill = document.getElementById("progressFill");
-    const progressPercentage = document.querySelector(".progress-percentage");
+    const progressPercentage = document.querySelector(".progress__percentage");
     const completedCount = document.getElementById("completedCount");
     const totalCount = document.getElementById("totalCount");
     const estimatedTime = document.getElementById("estimatedTime");
     const showAllBtn = document.getElementById("showAllBtn");
-    const chapterDifficulty = document.getElementById("chapter-difficulty");
 
     // Загрузка прогресса пользователя
     function loadUserProgress() {
@@ -866,22 +273,17 @@
             currentChapterDescription.textContent = chapter.description || "Explore topics in this chapter to build your Python skills.";
         }
         
-        // Обновляем сложность главы
-        if (chapterDifficulty) {
-            chapterDifficulty.textContent = calculateChapterDifficulty(chapter.topics);
-        }
-        
         // Обновляем активный элемент в сайдбаре
         sidebarItems.forEach((item, i) => {
-            item.classList.toggle("active", i === index);
+            item.classList.toggle("sidebar__item--active", i === index);
         });
         
         // Отображаем топики
         if (chapter.topics.length === 0) {
             topicsContainer.innerHTML = `
-                <div class="no-topics">
-                    <i class="bi bi-file-earmark-text"></i>
-                    <p>We're going to add some topics</p>
+                <div class="empty-state">
+                    <i class="empty-state__icon bi bi-file-earmark-text"></i>
+                    <p class="empty-state__message">We're going to add some topics</p>
                     <p class="text-secondary">Check back soon for updates!</p>
                 </div>
             `;
@@ -894,58 +296,58 @@
         chapter.topics.forEach((topic, topicIndex) => {
             const isCompleted = completedTopics.has(topic.id);
             
-            const card = document.createElement("div");
-            card.className = `topic-card ${isCompleted ? 'completed' : ''}`;
+            const card = document.createElement("a");
+            card.className = `topic-card ${isCompleted ? 'topic-card--completed' : ''}`;
             card.style.animationDelay = `${(topicIndex + 1) * 0.1}s`;
+            card.href = TOPIC_URL_TEMPLATE.replace('9999', topic.id);
             
-            card.onclick = () => {
+            // Обновляем progress при клике
+            card.addEventListener('click', function(e) {
                 // Отмечаем как прочитанный при клике
                 saveUserProgress(topic.id, true);
-                // Переходим к теме
-                const url = TOPIC_URL_TEMPLATE.replace('9999', topic.id);
-                window.location.href = url;
-            };
+                // Progress обновится при следующем рендере
+            });
             
             card.innerHTML = `
-                <div class="topic-card-header">
-                    <div class="topic-card-header-left">
-                        <span class="topic-number">Topic ${topic.order}</span>
+                <div class="topic-card__header">
+                    <div class="topic-card__header-left">
+                        <span class="topic-card__number">Topic ${topic.order}</span>
                         ${topic.difficulty ? `
-                            <span class="topic-difficulty difficulty-${topic.difficulty}">
+                            <span class="topic-card__difficulty topic-card__difficulty--${topic.difficulty}">
                                 ${topic.difficultyDisplay}
                             </span>
                         ` : ''}
                     </div>
-                    <div class="topic-card-header-right">
+                    <div class="topic-card__header-right">
                         ${topic.is_free ? `
-                            <span class="topic-access access-free">
-                                <i class="bi bi-unlock-fill" style="color: var(--color-text-secondary);"></i> Free
+                            <span class="topic-card__access topic-card__access--free">
+                                <i class="bi bi-unlock-fill"></i> Free
                             </span>
                         ` : `
-                            <span class="topic-access access-premium">
-                                <i class="bi bi-star-fill" style="color: #ffc107;"></i> Premium
+                            <span class="topic-card__access topic-card__access--premium">
+                                <i class="bi bi-star-fill"></i> Premium
                             </span>
                         `}
                     </div>
                 </div>
-                <h3 class="topic-title">${topic.title}</h3>
-                <p class="topic-description">
+                <h3 class="topic-card__title">${topic.title}</h3>
+                <p class="topic-card__description">
                     ${topic.description || "Learn essential concepts and practice with examples."}
                 </p>
-                <div class="topic-meta">
-                    <span class="topic-meta-item">
-                        <i class="bi bi-clock"></i>
+                <div class="topic-card__meta">
+                    <span class="topic-card__meta-item">
+                        <i class="topic-card__meta-icon bi bi-clock"></i>
                         ${topic.estimated_minutes} min
                     </span>
                     ${topic.has_exercises ? `
-                        <span class="topic-meta-item">
-                            <i class="bi bi-code-slash"></i>
+                        <span class="topic-card__meta-item">
+                            <i class="topic-card__meta-icon bi bi-code-slash"></i>
                             Exercises
                         </span>
                     ` : ''}
                     ${isCompleted ? `
-                        <span class="topic-meta-item">
-                            <i class="bi bi-check-circle" style="color: var(--color-accent-primary);"></i>
+                        <span class="topic-card__meta-item">
+                            <i class="topic-card__meta-icon bi bi-check-circle"></i>
                             Completed
                         </span>
                     ` : ''}
@@ -958,12 +360,12 @@
         // Обновляем прогресс
         updateChapterProgress(index);
         
-        // Добавляем плейсхолдеры для сохранения сетки
+        // Добавляем плейсхолдеры для сохранения сетки (опционально)
         if (window.innerWidth >= 769 && chapter.topics.length < 4) {
             const placeholdersCount = 4 - chapter.topics.length;
             for (let i = 0; i < placeholdersCount; i++) {
                 const placeholder = document.createElement("div");
-                placeholder.className = "topic-card card-placeholder";
+                placeholder.className = "topic-card topic-card--placeholder";
                 placeholder.style.visibility = 'hidden';
                 placeholder.style.height = '0';
                 placeholder.style.padding = '0';
@@ -977,7 +379,7 @@
     function selectChapter(index) {
         // Прокручиваем к началу
         window.scrollTo({
-            top: document.querySelector('.section-header').offsetTop - 100,
+            top: document.querySelector('.topics-section__header').offsetTop - 100,
             behavior: 'smooth'
         });
         
@@ -988,23 +390,11 @@
         localStorage.setItem('current_chapter_index', index);
     }
 
-    // Открытие темы
-    function openTopic(topicId) {
-        const url = TOPIC_URL_TEMPLATE.replace('9999', topicId);
-        window.location.href = url;
-    }
-
     // Инициализация
     document.addEventListener('DOMContentLoaded', function() {
         // Загружаем последнюю выбранную главу
         const savedChapterIndex = localStorage.getItem('current_chapter_index');
         const initialIndex = savedChapterIndex ? parseInt(savedChapterIndex) : 0;
-        
-        // Отладочная информация
-        console.log('Chapters data:', chaptersData);
-        if (chaptersData.length > 0 && chaptersData[0].topics.length > 0) {
-            console.log('First topic data:', chaptersData[0].topics[0]);
-        }
         
         if (chaptersData.length > 0) {
             // Рендерим начальную главу
@@ -1012,13 +402,13 @@
             
             // Обновляем кнопку "Показать все"
             if (showAllBtn) {
-                showAllBtn.href = "#chapters-list";
+                showAllBtn.href = ".sidebar";
                 showAllBtn.style.display = 'inline-flex';
                 
                 // Добавляем обработчик для кнопки
                 showAllBtn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    document.querySelector('.chapters-sidebar').scrollIntoView({
+                    document.querySelector('.sidebar').scrollIntoView({
                         behavior: 'smooth',
                         block: 'start'
                     });
@@ -1030,27 +420,39 @@
                 if (e.ctrlKey || e.metaKey) return;
                 
                 const currentIndex = Array.from(sidebarItems).findIndex(item => 
-                    item.classList.contains('active')
+                    item.classList.contains('sidebar__item--active')
                 );
                 
                 switch(e.key) {
                     case 'ArrowUp':
+                        e.preventDefault();
                         if (currentIndex > 0) {
                             selectChapter(currentIndex - 1);
                         }
                         break;
                     case 'ArrowDown':
+                        e.preventDefault();
                         if (currentIndex < chaptersData.length - 1) {
                             selectChapter(currentIndex + 1);
                         }
                         break;
                     case 'Home':
+                        e.preventDefault();
                         selectChapter(0);
                         break;
                     case 'End':
+                        e.preventDefault();
                         selectChapter(chaptersData.length - 1);
                         break;
                 }
+            });
+            
+            // Обработка кликов в сайдбаре
+            sidebarItems.forEach((item, index) => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    selectChapter(index);
+                });
             });
         }
     });
@@ -1058,7 +460,7 @@
     // Обработчик изменения размера окна
     window.addEventListener('resize', () => {
         const activeIndex = Array.from(sidebarItems).findIndex(item => 
-            item.classList.contains('active')
+            item.classList.contains('sidebar__item--active')
         );
         if (activeIndex !== -1 && chaptersData[activeIndex]) {
             renderTopics(activeIndex);

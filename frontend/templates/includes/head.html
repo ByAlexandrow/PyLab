@@ -1,0 +1,248 @@
+<header class="header">
+    <!-- Основной хедер -->
+    <div class="header__main">
+        <div class="container">
+            <!-- Логотип -->
+            <div class="logo">
+                <a href="/" class="logo__link">
+                    <img src="/static/img/logo/logo_100.png" alt="PyLab Logo" class="logo__image" />
+                    <div class="logo__text">
+                        <span class="logo__primary">PyLab</span>
+                        <span class="logo__subtitle">Learn Python</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Основная навигация -->
+            <nav class="nav">
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a href="{% url 'chapters:chapters' %}" 
+                           class="nav__link {% if 'chapters' in request.path %}nav__link--active{% endif %}">
+                            <i class="nav__icon bi bi-book"></i>
+                            <span class="nav__text">Chapters</span>
+                            <span class="nav__badge">New</span>
+                        </a>
+                    </li>
+                    <li class="nav__item nav__item--dropdown">
+                        <a href="#" class="nav__link">
+                            <i class="nav__icon bi bi-puzzle"></i>
+                            <span class="nav__text">Practice</span>
+                            <i class="bi bi-chevron-down nav__dropdown-icon"></i>
+                        </a>
+                        <div class="nav__dropdown">
+                            <a href="" class="nav__dropdown-item">
+                                <i class="nav__dropdown-icon-item bi bi-question-circle"></i>
+                                Tests & Quizzes
+                            </a>
+                            <a href="" class="nav__dropdown-item">
+                                <i class="nav__dropdown-icon-item bi bi-code-slash"></i>
+                                Exercises
+                            </a>
+                            <a href="" class="nav__dropdown-item">
+                                <i class="nav__dropdown-icon-item bi bi-kanban"></i>
+                                Projects
+                            </a>
+                        </div>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#" class="nav__link">
+                            <i class="nav__icon bi bi-graph-up"></i>
+                            <span class="nav__text">Progress</span>
+                        </a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#" class="nav__link">
+                            <i class="nav__icon bi bi-people"></i>
+                            <span class="nav__text">Community</span>
+                        </a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#" class="nav__link">
+                            <i class="nav__icon bi bi-journal-text"></i>
+                            <span class="nav__text">Blog</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Поиск и действия пользователя -->
+            <div class="header__actions">
+                <!-- Действия пользователя -->
+                <div class="user-actions">
+                    {% if user.is_authenticated %}
+                        <!-- Уведомления -->
+                        <div class="notifications">
+                            <button class="notifications__btn" aria-label="Notifications">
+                                <i class="bi bi-bell"></i>
+                                <span class="notifications__count">3</span>
+                            </button>
+                            <div class="notifications__menu">
+                                <div class="notifications__header">
+                                    <h4>Notifications</h4>
+                                    <a href="#" class="notifications__mark-all">Mark all as read</a>
+                                </div>
+                                <div class="notifications__list">
+                                    <!-- Список уведомлений -->
+                                </div>
+                                <a href="#" class="notifications__footer">
+                                    View all notifications
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Профиль пользователя -->
+                        <div class="profile">
+                            <button class="profile__btn" aria-label="User profile">
+                                <img src="/static/img/user/face.jpg" alt="User avatar" class="profile__avatar" />
+                                <span class="profile__name">{{ user.username }}</span>
+                                <i class="bi bi-chevron-down profile__btn-icon"></i>
+                            </button>
+                            <div class="profile__menu">
+                                <div class="profile__info">
+                                    <img src="/static/img/user/face.jpg" alt="User avatar" class="profile__avatar profile__avatar--large" />
+                                    <div class="profile__details">
+                                        <strong>{{ user.username }}</strong>
+                                        <small>{{ user.email }}</small>
+                                    </div>
+                                </div>
+                                <div class="profile__menu-items">
+                                    <a href="/users/profile/" class="profile__item">
+                                        <i class="profile__item-icon bi bi-person"></i>
+                                        My Profile
+                                    </a>
+                                    <a href="/users/progress/" class="profile__item">
+                                        <i class="profile__item-icon bi bi-graph-up"></i>
+                                        My Progress
+                                    </a>
+                                    <a href="/users/settings/" class="profile__item">
+                                        <i class="profile__item-icon bi bi-gear"></i>
+                                        Settings
+                                    </a>
+                                    <div class="profile__divider"></div>
+                                    <a href="/auth/logout/" class="profile__item profile__item--logout">
+                                        <i class="profile__item-icon bi bi-box-arrow-right"></i>
+                                        Logout
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <!-- Кнопки входа/регистрации -->
+                        <div class="auth">
+                            <a href="{% url 'login' %}" class="auth__btn auth__btn--login">
+                                <i class="bi bi-box-arrow-in-right"></i>
+                                Log In
+                            </a>
+                            <a href="{% url 'register' %}" class="auth__btn auth__btn--signup">
+                                <i class="bi bi-person-plus"></i>
+                                Sign Up
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Мобильное меню -->
+                <button class="menu-toggle" aria-label="Toggle menu">
+                    <span class="menu-toggle__icon"></span>
+                    <span class="menu-toggle__icon"></span>
+                    <span class="menu-toggle__icon"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Мобильная навигация -->
+    <nav class="nav nav--mobile">
+        <div class="mobile-nav__header">
+            <div class="mobile-nav__logo">
+                <img src="/static/img/logo/logo_100.png" alt="PyLab Logo" />
+                <span>PyLab</span>
+            </div>
+            <button class="mobile-nav__close" aria-label="Close menu">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        
+        <div class="mobile-nav__content">
+            <ul class="nav__list nav__list--vertical">
+                <li class="nav__item">
+                    <a href="{% url 'chapters:chapters' %}" 
+                       class="nav__link {% if 'chapters' in request.path %}nav__link--active{% endif %}">
+                        <i class="nav__icon bi bi-book"></i>
+                        <span class="nav__text">Chapters</span>
+                        <span class="nav__badge">New</span>
+                    </a>
+                </li>
+                <li class="nav__item">
+                    <a href="#" class="nav__link">
+                        <i class="nav__icon bi bi-puzzle"></i>
+                        <span class="nav__text">Practice</span>
+                    </a>
+                </li>
+                <li class="nav__item">
+                    <a href="#" class="nav__link">
+                        <i class="nav__icon bi bi-graph-up"></i>
+                        <span class="nav__text">Progress</span>
+                    </a>
+                </li>
+                <li class="nav__item">
+                    <a href="#" class="nav__link">
+                        <i class="nav__icon bi bi-people"></i>
+                        <span class="nav__text">Community</span>
+                    </a>
+                </li>
+                <li class="nav__item">
+                    <a href="#" class="nav__link">
+                        <i class="nav__icon bi bi-journal-text"></i>
+                        <span class="nav__text">Blog</span>
+                    </a>
+                </li>
+                
+                {% if user.is_authenticated %}
+                    <li class="nav__item">
+                        <a href="/users/profile/" class="nav__link">
+                            <i class="nav__icon bi bi-person"></i>
+                            <span class="nav__text">My Profile</span>
+                        </a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="/users/settings/" class="nav__link">
+                            <i class="nav__icon bi bi-gear"></i>
+                            <span class="nav__text">Settings</span>
+                        </a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="/auth/logout/" class="nav__link">
+                            <i class="nav__icon bi bi-box-arrow-right"></i>
+                            <span class="nav__text">Logout</span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav__item">
+                        <a href="{% url 'login' %}" class="nav__link">
+                            <i class="nav__icon bi bi-box-arrow-in-right"></i>
+                            <span class="nav__text">Log In</span>
+                        </a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="{% url 'register' %}" class="nav__link">
+                            <i class="nav__icon bi bi-person-plus"></i>
+                            <span class="nav__text">Sign Up</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+            
+            <!-- Мобильный поиск -->
+            <div class="search search--mobile">
+                <div class="search__box search__box--mobile">
+                    <input type="text" class="search__input" placeholder="Search topics...">
+                    <button class="search__btn">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
