@@ -134,6 +134,10 @@ MEDIA_ROOT = BACKEND_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+LOGIN_REDIRECT_URL = '/users/profile/'
+LOGOUT_REDIRECT_URL = 'users:logout'
+LOGIN_URL = 'users:login'
+
 TINYMCE_DEFAULT_CONFIG = {
     'height': 400,
     'width': 800,

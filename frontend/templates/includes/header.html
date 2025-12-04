@@ -162,7 +162,10 @@
                                         Settings
                                     </a>
                                     <div class="menu-divider"></div>
-                                    <a href="/users/logout/" class="profile-item logout">
+                                    <form id="logout-form" method="post" action="{% url 'users:logout' %}" style="display: none;">
+                                        {% csrf_token %}
+                                    </form>
+                                    <a href="#" onclick="document.getElementById('logout-form').submit(); return false;" class="profile-item logout">
                                         <i class="bi bi-box-arrow-right"></i>
                                         Logout
                                     </a>
