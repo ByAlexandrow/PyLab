@@ -60,15 +60,15 @@
                         <div class="dropdown-menu">
                             <a href="" class="dropdown-item">
                                 <i class="bi bi-question-circle"></i>
-                                Tests & Quizzes
-                            </a>
-                            <a href="" class="dropdown-item">
-                                <i class="bi bi-code-slash"></i>
-                                Exercises
+                                Tests
                             </a>
                             <a href="" class="dropdown-item">
                                 <i class="bi bi-kanban"></i>
                                 Projects
+                            </a>
+                            <a href="" class="dropdown-item">
+                                <i class="bi bi-code-slash"></i>
+                                Tasks
                             </a>
                         </div>
                     </li>
@@ -162,7 +162,7 @@
                                         Settings
                                     </a>
                                     <div class="menu-divider"></div>
-                                    <a href="/auth/logout/" class="profile-item logout">
+                                    <a href="/users/logout/" class="profile-item logout">
                                         <i class="bi bi-box-arrow-right"></i>
                                         Logout
                                     </a>
@@ -172,14 +172,14 @@
                     {% else %}
                         <!-- Кнопки входа/регистрации -->
                         <div class="auth-buttons">
-                            <a href="{% url 'login' %}" class="auth-btn login-btn">
+                            <a href="/users/login/" class="auth-btn login-btn">
                                 <i class="bi bi-box-arrow-in-right"></i>
                                 Log In
                             </a>
-                            <a href="{% url 'register' %}" class="auth-btn signup-btn">
+                            <!-- <a href="" class="auth-btn signup-btn">
                                 <i class="bi bi-person-plus"></i>
                                 Sign Up
-                            </a>
+                            </a> -->
                         </div>
                     {% endif %}
                 </div>
