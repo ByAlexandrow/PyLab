@@ -1,18 +1,312 @@
 <header>
-    <div class="logo">
-        <img src="/static/img/logo/logo_100.png" alt="Логотип сайта" />
-        <div class="logo-text">PyLab</div>
+    <!-- Верхняя полоса -->
+    <!-- <div class="header-top">
+        <div class="container">
+            <div class="header-announcement">
+                <i class="bi bi-megaphone"></i>
+                <span class="announcement-text">
+                    New: Advanced Python Topics just added! 
+                    <a href="#" class="announcement-link">Check it out →</a>
+                </span>
+            </div>
+            
+            <div class="header-utilities">
+                <a href="#" class="utility-link">
+                    <i class="bi bi-question-circle"></i>
+                    Help Center
+                </a>
+                <a href="#" class="utility-link">
+                    <i class="bi bi-translate"></i>
+                    Language
+                </a>
+                <a href="#" class="utility-link">
+                    <i class="bi bi-moon"></i>
+                    Dark Mode
+                </a>
+            </div>
+        </div>
+    </div> -->
+
+    <!-- Основной хедер -->
+    <div class="header-main">
+        <div class="container">
+            <!-- Логотип -->
+            <div class="header-logo">
+                <a href="/" class="logo-link">
+                    <img src="/static/img/logo/logo.png" alt="PyLab Logo" class="logo-image" />
+                    <div class="logo-text">
+                        <span class="logo-primary">PyLab</span>
+                        <span class="logo-subtitle">Learn Python</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Основная навигация -->
+            <nav class="header-nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="{% url 'chapters:chapters' %}" class="nav-link {% if 'chapters' in request.path %}active{% endif %}">
+                            <i class="bi bi-book"></i>
+                            <span class="nav-text">Chapters</span>
+                            <span class="nav-badge">New</span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-puzzle"></i>
+                            <span class="nav-text">Practice</span>
+                            <i class="bi bi-chevron-down dropdown-icon"></i>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a href="/tests/tests/" class="dropdown-item">
+                                <i class="bi bi-question-circle"></i>
+                                Tests
+                            </a>
+                            <a href="/projects/projects/" class="dropdown-item">
+                                <i class="bi bi-kanban"></i>
+                                Projects
+                            </a>
+                            <a href="/tasks/tasks/" class="dropdown-item">
+                                <i class="bi bi-code-slash"></i>
+                                Tasks
+                            </a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-graph-up"></i>
+                            <span class="nav-text">Progress</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-people"></i>
+                            <span class="nav-text">Community</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-journal-text"></i>
+                            <span class="nav-text">Blog</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Поиск и действия пользователя -->
+            <div class="header-actions">
+                <!-- Поиск -->
+                <!-- <div class="search-container">
+                    <button class="search-toggle" aria-label="Search">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    <div class="search-box">
+                        <input type="text" 
+                               placeholder="Search topics, exercises..." 
+                               class="search-input">
+                        <button class="search-btn" aria-label="Submit search">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </div> -->
+
+                <!-- Действия пользователя -->
+                <div class="user-actions">
+                    {% if user.is_authenticated %}
+                        <!-- Уведомления -->
+                        <div class="notification-dropdown">
+                            <button class="notification-btn" aria-label="Notifications">
+                                <i class="bi bi-bell"></i>
+                                <span class="notification-count">3</span>
+                            </button>
+                            <div class="notification-menu">
+                                <div class="notification-header">
+                                    <h4>Notifications</h4>
+                                    <a href="#" class="mark-all-read">Mark all as read</a>
+                                </div>
+                                <div class="notification-list">
+                                    <!-- Список уведомлений -->
+                                </div>
+                                <a href="#" class="notification-footer">
+                                    View all notifications
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Профиль пользователя -->
+                        <div class="profile-dropdown">
+                            <button class="profile-btn" aria-label="User profile">
+                                <img src="/static/img/user/avatar.jpg" alt="User avatar" class="profile-avatar" />
+                                <span class="profile-name">{{ user.username }}</span>
+                                <i class="bi bi-chevron-down"></i>
+                            </button>
+                            <div class="profile-menu">
+                                <div class="profile-info">
+                                    <img src="/static/img/user/avatar.jpg" alt="User avatar" />
+                                    <div class="profile-details">
+                                        <strong>{{ user.username }}</strong>
+                                        <small>{{ user.email }}</small>
+                                    </div>
+                                </div>
+                                <div class="profile-menu-items">
+                                    <a href="/users/profile/" class="profile-item">
+                                        <i class="bi bi-person"></i>
+                                        My Profile
+                                    </a>
+                                    <a href="/users/premium/" class="profile-item">
+                                        <i class="bi bi-star"></i>
+                                        Premium
+                                    </a>
+                                    <a href="/users/settings/" class="profile-item">
+                                        <i class="bi bi-gear"></i>
+                                        Settings
+                                    </a>
+                                    <div class="menu-divider"></div>
+                                    <form id="logout-form" method="post" action="{% url 'users:logout' %}" style="display: none;">
+                                        {% csrf_token %}
+                                    </form>
+                                    <a href="#" onclick="document.getElementById('logout-form').submit(); return false;" class="profile-item logout">
+                                        <i class="bi bi-box-arrow-right"></i>
+                                        Logout
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <!-- Кнопки входа/регистрации -->
+                        <div class="auth-buttons">
+                            <a href="/users/login/" class="auth-btn login-btn">
+                                <i class="bi bi-box-arrow-in-right"></i>
+                                Log In
+                            </a>
+                            <!-- <a href="" class="auth-btn signup-btn">
+                                <i class="bi bi-person-plus"></i>
+                                Sign Up
+                            </a> -->
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Мобильное меню -->
+                <button class="menu-toggle" aria-label="Toggle menu">
+                    <span class="menu-icon"></span>
+                    <span class="menu-icon"></span>
+                    <span class="menu-icon"></span>
+                </button>
+            </div>
+        </div>
     </div>
-    <nav>
-        <!-- <a href="/algorithms/">Algorithms</a>
-        <a href="#">Test_db</a> -->
-        <a href="{% url 'chapters:chapters' %}">CHAPTERS</a>
-        <!-- <a href="/tasks/">Task_db</a>
-        <a href="/tasks/">Projects</a>
-        <a href="/manuals/">Manuals</a> -->
+
+    <!-- Мобильная навигация -->
+    <nav class="mobile-nav">
+        <div class="mobile-nav-header">
+            <div class="mobile-logo">
+                <img src="/static/img/logo/logo.png" alt="PyLab Logo" />
+                <span>PyLab</span>
+            </div>
+            <button class="mobile-close" aria-label="Close menu">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        
+        <div class="mobile-nav-content">
+            <!-- Мобильные ссылки -->
+        </div>
     </nav>
-    <div class="profile" aria-label="Профиль пользователя">
-        <img src="/static/img/user/face.jpg" />
-        <a href="/users/profile/">PROFILE</a>
-    </div>
 </header>
+
+<script>
+    /* JavaScript для интерактивности */
+    document.addEventListener('DOMContentLoaded', function() {
+        const header = document.querySelector('.header-main');
+        const menuToggle = document.querySelector('.menu-toggle');
+        const mobileNav = document.querySelector('.mobile-nav');
+        const mobileClose = document.querySelector('.mobile-close');
+        const searchToggle = document.querySelector('.search-toggle');
+        const searchBox = document.querySelector('.search-box');
+        
+        // Эффект при скролле
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+        
+        // Мобильное меню
+        if (menuToggle && mobileNav) {
+            menuToggle.addEventListener('click', function() {
+                mobileNav.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            if (mobileClose) {
+                mobileClose.addEventListener('click', function() {
+                    mobileNav.classList.remove('open');
+                    document.body.style.overflow = '';
+                });
+            }
+            
+            // Закрытие при клике вне меню
+            document.addEventListener('click', function(event) {
+                if (mobileNav.classList.contains('open') && 
+                    !event.target.closest('.mobile-nav') && 
+                    !event.target.closest('.menu-toggle')) {
+                    mobileNav.classList.remove('open');
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+        
+        // Поиск
+        if (searchToggle && searchBox) {
+            searchToggle.addEventListener('click', function() {
+                searchBox.classList.toggle('open');
+                if (searchBox.classList.contains('open')) {
+                    searchBox.querySelector('.search-input').focus();
+                }
+            });
+            
+            // Закрытие при клике вне поиска
+            document.addEventListener('click', function(event) {
+                if (searchBox.classList.contains('open') && 
+                    !event.target.closest('.search-box') && 
+                    !event.target.closest('.search-toggle')) {
+                    searchBox.classList.remove('open');
+                }
+            });
+        }
+        
+        // Активная ссылка в навигации
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.nav-link').forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            }
+        });
+        
+        // Горячие клавиши
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + K для поиска
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                if (searchBox) {
+                    searchBox.classList.add('open');
+                    searchBox.querySelector('.search-input').focus();
+                }
+            }
+            
+            // Esc для закрытия
+            if (e.key === 'Escape') {
+                if (mobileNav && mobileNav.classList.contains('open')) {
+                    mobileNav.classList.remove('open');
+                    document.body.style.overflow = '';
+                }
+                if (searchBox && searchBox.classList.contains('open')) {
+                    searchBox.classList.remove('open');
+                }
+            }
+        });
+    });
+</script>

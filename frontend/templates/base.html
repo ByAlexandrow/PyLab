@@ -1,32 +1,84 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<title>{% block title %}PyLab{% endblock %}</title>
-<link rel="stylesheet" href="/static/styles/css/includes/header.css" />
-<link rel="stylesheet" href="/static/styles/css/chapters/chapters.css" />
-<link rel="stylesheet" href="/static/styles/css/includes/footer.css" />
-<link rel="stylesheet" href="/static/styles/css/base.css" />
-<link rel="icon" href="/static/img/favicon/favicon.ico" type="image/x-icon" />
-<link rel="apple-touch-icon" sizes="180x180" href="/static/img/favicon/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/static/img/favicon/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/static/img/favicon/favicon-16x16.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" />
-<script defer src="https://pyscript.net/latest/pyscript.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PyLab{% endblock %}</title>
+    
+    <!-- Основные стили -->
+    <link rel="stylesheet" href="/static/styles/css/includes/header.css" />
+    <link rel="stylesheet" href="/static/styles/css/users/login.css">
+    <link rel="stylesheet" href="/static/styles/css/chapters/chapters.css" />
+    <link rel="stylesheet" href="/static/styles/css/chapters/topic.css" />
+    <link rel="stylesheet" href="/static/styles/css/base.css" />
+    <link rel="stylesheet" href="/static/styles/css/includes/footer.css" />
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Иконки -->
+    <link rel="icon" href="/static/img/favicon/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/img/favicon/favicon-16x16.png">
+    
+    <!-- Шрифты -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    
+    <!-- PyScript и Prism -->
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+    
+    {% block extra_css %}{% endblock %}
+    {% block extra_head %}{% endblock %}
 </head>
-<body>
+<body class="preload">
     <div class="grid-background">
         {% include "includes/header.html" %}
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+        
+        <main>
+            {% if messages %}
+                <div class="container">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} fade-in">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            {% block content %}{% endblock %}
+        </main>
+        
         {% include "includes/footer.html" %}
     </div>
+    
+    <!-- Внешние скрипты -->
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+    <!-- В конец body перед закрывающим </body> -->
+    <script>
+        // Простой и надежный способ показать контент
+        document.addEventListener('DOMContentLoaded', function() {
+            // Небольшая задержка для загрузки CSS
+            requestAnimationFrame(function() {
+                document.body.classList.add('content-visible');
+            });
+        });
+        
+        // На всякий случай - принудительный показ через 3 секунды
+        setTimeout(function() {
+            document.body.classList.add('content-visible');
+        }, 3000);
+    </script>
+    
+    <!-- ЕДИНСТВЕННЫЙ блок для скриптов дочерних шаблонов -->
+    {% block scripts %}{% endblock %}
+    
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

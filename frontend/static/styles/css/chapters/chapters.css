@@ -1,164 +1,707 @@
-.main-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  box-sizing: border-box;
+/* ============================================
+   Блок: chapters (страница глав)
+   ============================================ */
+
+/* Основной контейнер страницы глав */
+.chapters {
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: calc(100vh - 200px);
+    animation: fadeInUp 0.5s ease;
 }
-.section-title {
-    color: grey;
-    font-family: "Montserrat", sans-serif;
+
+.chapters--fullscreen {
+    min-height: 100vh;
 }
-.content-wrapper {
-  display: flex;
-  gap: 30px;
-  align-items: flex-start;
-  margin-top: 20px;
-}
-.sidebar-container {
-  width: 280px;
-  flex-shrink: 0;
-  position: sticky;
-  top: 100px;
-  align-self: flex-start;
-}
-.sidebar {
-  width: 100%;
-  background-color: grey;
-  border-radius: 20px;
-  padding: 20px;
-  box-sizing: border-box;
-}
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.sidebar li {
-  padding: 12px 16px;
-  cursor: pointer;
-  border-radius: 6px;
-  margin-bottom: 6px;
-  user-select: none;
-  transition: all 0.2s ease;
-  border-left: 3px solid transparent;
-  border-left-color: rgb(17, 74, 158);
-}
-.sidebar li:hover {
-  background-color: rgb(18, 18, 18);
-  color: whitesmoke;
-  border-left-color: rgb(17, 74, 158);
-}
-.sidebar li.active {
-  background-color: rgb(18, 18, 18);
-  color: limegreen;
-  border-left-color: limegreen;
-}
-.topics-section {
-  flex: 1;
-  min-width: 0;
-}
-.section-title {
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid #eaeaea;
-  color: grey;
-}
-.topics-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
-  width: 100%;
-}
-.card {
-  background-color: rgb(131, 131, 131);
-  border: 2px solid whitesmoke;
-  border-radius: 10px;
-  padding: 18px 15px;
-  text-align: center;
-  box-sizing: border-box;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 120px;
-  width: 190px;
-}
-.card:hover {
-  transform: translateY(-3px);
-  border-color: limegreen;
-}
-.card h3 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  font-size: 16px;
-  color: whitesmoke;
-}
-.card p {
-  margin: 0;
-  font-size: 14px;
-  color: whitesmoke;
-}
-.current-chapter {
-  color: limegreen;
-  font-weight: 600;
-}
-.card-placeholder {
-  visibility: hidden;
-  height: 0;
-  padding: 0;
-  border: none;
-  box-shadow: none;
-}
-.no-topics {
+
+/* Заголовок страницы */
+.chapters__header {
     text-align: center;
-    padding: 40px;
-    color: rgb(131, 131, 131);
-    font-style: italic;
-}
-@media (min-width: 769px) {
-  .topics-container {
-    grid-template-columns: repeat(4, 1fr);
-  }
+    margin-top: 30px;
+    margin-bottom: 100px;
+    position: relative;
 }
 
-@media (max-width: 1100px) {
-  .topics-container {
-    grid-template-columns: repeat(3, 1fr);
-  }
+.chapters__title {
+    font-size: 3.2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 15px;
+    letter-spacing: -1px;
 }
 
-@media (max-width: 900px) {
-  .content-wrapper {
-    gap: 20px;
-  }
-  
-  .topics-container {
-    grid-template-columns: repeat(3, 1fr);
-  }
+.chapters__title--small {
+    font-size: 2.5rem;
+}
+
+.chapters__title--xsmall {
+    font-size: 2rem;
+}
+
+.chapters__subtitle {
+    font-size: 1.2rem;
+    color: var(--color-text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.chapters__subtitle--small {
+    font-size: 1.1rem;
+}
+
+.chapters__header::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary));
+    border-radius: 2px;
+}
+
+/* Обертка контента */
+.chapters__content {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    margin-top: 30px;
+}
+
+.chapters__content--vertical {
+    flex-direction: column;
+}
+
+/* ============================================
+   Блок: sidebar (боковая панель)
+   ============================================ */
+
+.sidebar {
+    width: 320px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 120px;
+    align-self: flex-start;
+}
+
+.sidebar--fullwidth {
+    width: 100%;
+    position: static;
+}
+
+.sidebar__panel {
+    width: 100%;
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-xl);
+    padding: 25px;
+    border: 1px solid var(--color-border-primary);
+    box-shadow: var(--shadow-md);
+}
+
+.sidebar__panel--transparent {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.sidebar__panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar__panel::-webkit-scrollbar-track {
+    background: var(--color-bg-primary);
+    border-radius: 3px;
+}
+
+.sidebar__panel::-webkit-scrollbar-thumb {
+    background: var(--color-border-primary);
+    border-radius: 3px;
+}
+
+.sidebar__panel::-webkit-scrollbar-thumb:hover {
+    background: var(--color-accent-primary);
+}
+
+.sidebar__header {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--color-border-primary);
+}
+
+.sidebar__title {
+    font-size: 1.3rem;
+    color: var(--color-text-light);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar__title-icon {
+    color: var(--color-accent-primary);
+}
+
+.sidebar__stats {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin-top: 8px;
+}
+
+.sidebar__stats-accent {
+    color: var(--color-accent-primary);
+}
+
+/* Список глав в сайдбаре */
+.sidebar__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar__item {
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-lg);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sidebar__item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--color-accent-primary);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.sidebar__item:hover {
+    background: var(--color-bg-hover);
+    transform: translateX(5px);
+    border-color: var(--color-accent-primary);
+}
+
+.sidebar__item:hover::before {
+    transform: scaleX(1);
+}
+
+.sidebar__item--active {
+    background: linear-gradient(135deg, rgba(126, 231, 135, 0.15), rgba(86, 211, 100, 0.1));
+    border-color: var(--color-accent-primary);
+    color: var(--color-accent-primary);
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(126, 231, 135, 0.1);
+}
+
+.sidebar__item--active::before {
+    transform: scaleX(1);
+    background: var(--color-accent-secondary);
+}
+
+.sidebar__item-icon {
+    font-size: 1.1rem;
+    color: var(--color-accent-primary);
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+}
+
+.sidebar__item:hover .sidebar__item-icon {
+    transform: rotate(15deg);
+}
+
+.sidebar__item--active .sidebar__item-icon {
+    color: var(--color-accent-secondary);
+}
+
+.sidebar__item-text {
+    flex: 1;
+}
+
+/* ============================================
+   Блок: topics-section (секция тем)
+   ============================================ */
+
+.topics-section {
+    flex: 1;
+    min-width: 0;
+}
+
+.topics-section__header {
+    margin-bottom: 0px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--color-border-primary);
+}
+
+.topics-section__title {
+    font-size: 1.8rem;
+    color: var(--color-text-light);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.topics-section__title-icon {
+    color: var(--color-accent-primary);
+    font-size: 1.5rem;
+}
+
+.topics-section__chapter-name {
+    background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    margin-left: 10px;
+}
+
+.topics-section__description {
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 800px;
+}
+
+/* ============================================
+   Блок: progress (прогресс главы)
+   ============================================ */
+
+.progress {
+    background: var(--color-bg-tertiary);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--color-border-primary);
+}
+
+.progress--compact {
+    padding: 15px;
+    margin: 15px 0;
+}
+
+.progress__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.progress__title {
+    font-size: 1.1rem;
+    color: var(--color-text-light);
+    font-weight: 600;
+}
+
+.progress__percentage {
+    color: var(--color-accent-primary);
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.progress__bar {
+    height: 8px;
+    background: var(--color-border-primary);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress__fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.progress__stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Блок: topics-container (контейнер тем)
+   ============================================ */
+
+.topics-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.topics-container--single {
+    grid-template-columns: 1fr;
+}
+
+/* ============================================
+   Блок: topic-card (карточка темы)
+   ============================================ */
+
+.topic-card {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-lg);
+    padding: 25px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: fadeInUp 0.5s ease;
+    animation-fill-mode: both;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+}
+
+.topic-card:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+.topic-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.topic-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--color-accent-primary);
+    box-shadow: var(--shadow-lg);
+}
+
+.topic-card:hover::before {
+    transform: scaleX(1);
+}
+
+.topic-card--read {
+    opacity: 0.8;
+}
+
+.topic-card--completed {
+    border-color: var(--color-accent-primary);
+}
+
+.topic-card__header {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.topic-card__number {
+    font-size: 0.9rem;
+    color: var(--color-accent-primary);
+    background: rgba(126, 231, 135, 0.1);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    border: 1px solid rgba(126, 231, 135, 0.2);
+}
+
+.topic-card__difficulty {
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.topic-card__difficulty--easy {
+    background: rgba(126, 231, 135, 0.1);
+    color: var(--color-accent-primary);
+    border: 1px solid rgba(126, 231, 135, 0.2);
+}
+
+.topic-card__difficulty--medium {
+    background: rgba(255, 211, 77, 0.1);
+    color: #ffd34d;
+    border: 1px solid rgba(255, 211, 77, 0.2);
+}
+
+.topic-card__difficulty--hard {
+    background: rgba(248, 81, 73, 0.1);
+    color: #f85149;
+    border: 1px solid rgba(248, 81, 73, 0.2);
+}
+
+.topic-card__title {
+    font-size: 1.3rem;
+    color: var(--color-text-light);
+    font-weight: 600;
+    margin-bottom: 10px;
+    line-height: 1.4;
+    flex: 1;
+}
+
+.topic-card__description {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    flex: 1;
+}
+
+.topic-card__meta {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: auto;
+    padding-top: 15px;
+    border-top: 1px solid var(--color-border-primary);
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+}
+
+.topic-card__meta-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.topic-card__meta-icon {
+    color: var(--color-accent-primary);
+    font-size: 0.9rem;
+}
+
+/* Анимация появления карточек */
+.topic-card:nth-child(1) { animation-delay: 0.1s; }
+.topic-card:nth-child(2) { animation-delay: 0.2s; }
+.topic-card:nth-child(3) { animation-delay: 0.3s; }
+.topic-card:nth-child(4) { animation-delay: 0.4s; }
+.topic-card:nth-child(5) { animation-delay: 0.5s; }
+.topic-card:nth-child(6) { animation-delay: 0.6s; }
+.topic-card:nth-child(7) { animation-delay: 0.7s; }
+.topic-card:nth-child(8) { animation-delay: 0.8s; }
+.topic-card:nth-child(9) { animation-delay: 0.9s; }
+.topic-card:nth-child(10) { animation-delay: 1.0s; }
+
+/* ============================================
+   Блок: chapters-btn (кнопки)
+   ============================================ */
+
+.chapters__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 25px;
+    background: var(--color-accent-primary);
+    color: var(--color-bg-primary);
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    margin-top: 20px;
+}
+
+.chapters__btn:hover {
+    background: var(--color-accent-secondary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+    color: var(--color-bg-primary);
+}
+
+.chapters__btn-icon {
+    transition: transform 0.3s ease;
+}
+
+.chapters__btn:hover .chapters__btn-icon {
+    transform: translateX(5px);
+}
+
+.chapters__btn--outline {
+    background: transparent;
+    color: var(--color-accent-primary);
+    border: 1px solid var(--color-accent-primary);
+}
+
+.chapters__btn--outline:hover {
+    background: var(--color-accent-primary);
+    color: var(--color-bg-primary);
+}
+
+/* ============================================
+   Блок: empty-state (пустые состояния)
+   ============================================ */
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 2px dashed var(--color-border-primary);
+}
+
+.empty-state--compact {
+    padding: 40px 20px;
+}
+
+.empty-state__icon {
+    font-size: 3rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.empty-state__message {
+    color: var(--color-text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+/* ============================================
+   Адаптивность
+   ============================================ */
+
+@media (max-width: 1200px) {
+    .chapters__content {
+        gap: 30px;
+    }
+    
+    .sidebar {
+        width: 280px;
+    }
+    
+    .topics-container {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 992px) {
+    .chapters__content {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        position: static;
+    }
+    
+    .sidebar__panel {
+        max-height: none;
+    }
+    
+    .topics-container {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+    
+    .chapters__content--vertical {
+        gap: 20px;
+    }
 }
 
 @media (max-width: 768px) {
-  .content-wrapper {
-    flex-direction: column;
-  }
-  
-  .sidebar-container {
-    width: 100%;
-    position: static;
-  }
-  
-  .sidebar {
-    position: static;
-  }
-  
-  .topics-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
+    .chapters {
+        padding: 20px 15px;
+    }
+    
+    .chapters__title {
+        font-size: 2.5rem;
+    }
+    
+    .chapters__title--small {
+        font-size: 2rem;
+    }
+    
+    .chapters__subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .topics-container {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+    
+    .topic-card {
+        padding: 20px;
+    }
+    
+    .topic-card__title {
+        font-size: 1.2rem;
+    }
+    
+    .topics-section__title {
+        font-size: 1.5rem;
+    }
 }
 
-@media (max-width: 480px) {
-  .topics-container {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 576px) {
+    .chapters__title {
+        font-size: 2rem;
+    }
+    
+    .chapters__title--xsmall {
+        font-size: 1.8rem;
+    }
+    
+    .topics-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .topics-section__title {
+        font-size: 1.3rem;
+    }
+    
+    .sidebar__item {
+        padding: 14px 16px;
+    }
+    
+    .topic-card__meta {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .chapters__btn {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .chapters__title {
+        font-size: 1.8rem;
+    }
+    
+    .topic-card {
+        padding: 18px;
+    }
+    
+    .empty-state {
+        padding: 40px 15px;
+    }
+    
+    .empty-state__icon {
+        font-size: 2.5rem;
+    }
 }

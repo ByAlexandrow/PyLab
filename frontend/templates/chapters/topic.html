@@ -1,4 +1,277 @@
 {% extends "base.html" %}
-{% block title %} PyLab - Topic {% endblock title %}
+{% block title %}PyLab - {{ topic.title }}{% endblock %}
 {% block content %}
-{% endblock content %}
+<div class="topic">
+    <div class="topic__container">
+        <!-- Прогресс чтения -->
+        <div class="scroll-controls__progress">
+            <div class="scroll-controls__progress-bar" id="readingProgress"></div>
+        </div>
+
+        <!-- Заголовок темы -->
+        <h1 class="topic__title">{{ topic.title }}</h1>
+
+        <!-- Мета-информация -->
+        <div class="topic__meta">
+            <span class="topic__chapter">
+                <i class="topic__chapter-icon bi bi-book"></i>
+                Chapter: {{ topic.chapter.title }}
+            </span>
+            <span class="topic__time">
+                <i class="topic__time-icon bi bi-clock"></i>
+                {{ topic.estimated_minutes }} min
+            </span>
+        </div>
+
+        <!-- Основное содержание -->
+        <div class="topic__content">
+            {% if topic.content %}
+                <div class="topic__body">
+                    {{ topic.content|safe }}
+                </div>
+            {% else %}
+                <div class="topic__empty">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <p>Content for this topic is coming soon!</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <!-- Практические материалы -->
+        <div class="materials">
+            <h3 class="materials__title">
+                <i class="materials__title-icon bi bi-rocket-takeoff"></i>
+                Practice & Apply
+            </h3>
+            <div class="materials__grid">
+                <a href="/tests/tests/" class="materials__card materials__card--tests">
+                    <div class="materials__icon">
+                        <i class="bi bi-question-circle"></i>
+                    </div>
+                    <div class="materials__content">
+                        <h4 class="materials__content-title">Tests</h4>
+                        <p class="materials__content-description">Check your understanding</p>
+                    </div>
+                    <div class="materials__arrow">
+                        <i class="bi bi-arrow-right"></i>
+                    </div>
+                </a>
+                <a href="/projects/projects/" class="materials__card materials__card--projects">
+                    <div class="materials__icon">
+                        <i class="bi bi-kanban"></i>
+                    </div>
+                    <div class="materials__content">
+                        <h4 class="materials__content-title">Projects</h4>
+                        <p class="materials__content-description">Build real projects to apply your knowledge</p>
+                    </div>
+                    <div class="materials__arrow">
+                        <i class="bi bi-arrow-right"></i>
+                    </div>
+                </a>
+                <a href="tasks/tasks/" class="materials__card materials__card--exercises">
+                    <div class="materials__icon">
+                        <i class="bi bi-code-slash"></i>
+                    </div>
+                    <div class="materials__content">
+                        <h4 class="materials__content-title">Tasks</h4>
+                        <p class="materials__content-description">Practice coding with hands-on exercises</p>
+                    </div>
+                    <div class="materials__arrow">
+                        <i class="bi bi-arrow-right"></i>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!-- Навигация между темами -->
+        <div class="topic-nav">
+                <a href="" class="topic-nav__btn topic-nav__btn--prev">
+                    <i class="topic-nav__btn-icon bi bi-chevron-left"></i>
+                    Prev
+                </a>
+            <a href="" class="topic-nav__btn topic-nav__btn--chapters">
+                <i class="bi bi-list-ul"></i>
+                Chapter Topics
+            </a>
+                <a href="" class="topic-nav__btn topic-nav__btn--next">
+                    Next
+                    <i class="topic-nav__btn-icon bi bi-chevron-right"></i>
+                </a>
+        </div>
+    </div>
+
+    <!-- Кнопка "Наверх" -->
+    <a href="#" class="scroll-controls__top-btn" id="backToTop">
+        <i class="bi bi-chevron-up"></i>
+    </a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const topicContent = document.querySelector('.topic__content');
+        const backToTop = document.getElementById('backToTop');
+        const readingProgress = document.getElementById('readingProgress');
+        
+        // Прогресс чтения
+        if (topicContent && readingProgress) {
+            topicContent.addEventListener('scroll', function() {
+                // Прогресс чтения
+                const scrollPercentage = (this.scrollTop / (this.scrollHeight - this.clientHeight)) * 100;
+                readingProgress.style.width = scrollPercentage + '%';
+                
+                // Кнопка "Наверх"
+                if (this.scrollTop > 300) {
+                    backToTop.classList.add('scroll-controls__top-btn--visible');
+                } else {
+                    backToTop.classList.remove('scroll-controls__top-btn--visible');
+                }
+                
+                // Тень при скролле
+                if (this.scrollTop > 10) {
+                    this.style.boxShadow = 'inset 0 10px 10px -10px rgba(0,0,0,0.1)';
+                } else {
+                    this.style.boxShadow = 'none';
+                }
+            });
+        }
+        
+        // Кнопка "Наверх"
+        if (backToTop) {
+            backToTop.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (topicContent) {
+                    topicContent.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                } else {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        }
+        
+        // Анимация появления карточек
+        const cards = document.querySelectorAll('.materials__card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100 * index);
+        });
+        
+        // Подсветка кода внутри контента
+        document.querySelectorAll('.topic__body pre code').forEach(block => {
+            const code = block.textContent;
+            const lines = code.split('\n').length;
+            
+            if (lines > 1) {
+                block.style.padding = '20px';
+                block.style.position = 'relative';
+            }
+        });
+        
+        // Автоматическое прокручивание к якорям
+        document.querySelectorAll('.topic__body a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement && topicContent) {
+                    topicContent.scrollTo({
+                        top: targetElement.offsetTop - 20,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Отметка прочитанной темы
+        const markAsRead = () => {
+            if (topicContent && topicContent.scrollHeight - topicContent.scrollTop - topicContent.clientHeight < 100) {
+                // Тема почти прочитана - можно сохранить в localStorage
+                const topicId = '{{ topic.id }}';
+                localStorage.setItem(`topic_${topicId}_read`, 'true');
+                
+                // Можно добавить визуальную индикацию
+                const chapterElement = document.querySelector('.topic__chapter');
+                if (chapterElement) {
+                    chapterElement.classList.add('topic__chapter--highlight');
+                }
+            }
+        };
+        
+        if (topicContent) {
+            topicContent.addEventListener('scroll', markAsRead);
+        }
+        
+        // Горячие клавиши
+        document.addEventListener('keydown', function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            
+            switch(e.key) {
+                case 'ArrowLeft':
+                    const prevBtn = document.querySelector('.topic-nav__btn--prev:not(.topic-nav__btn--disabled)');
+                    if (prevBtn) prevBtn.click();
+                    break;
+                case 'ArrowRight':
+                    const nextBtn = document.querySelector('.topic-nav__btn--next:not(.topic-nav__btn--disabled)');
+                    if (nextBtn) nextBtn.click();
+                    break;
+                case 'Home':
+                    if (topicContent) {
+                        topicContent.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                    break;
+                case 'End':
+                    if (topicContent) {
+                        topicContent.scrollTo({ top: topicContent.scrollHeight, behavior: 'smooth' });
+                    }
+                    break;
+            }
+        });
+        
+        // Инициализация после загрузки
+        setTimeout(() => {
+            // Проверка, прочитана ли тема ранее
+            const topicId = '{{ topic.id }}';
+            const isRead = localStorage.getItem(`topic_${topicId}_read`);
+            if (isRead === 'true') {
+                const chapterElement = document.querySelector('.topic__chapter');
+                if (chapterElement) {
+                    chapterElement.classList.add('topic__chapter--highlight');
+                    chapterElement.innerHTML += '<i class="bi bi-check-circle" style="margin-left: 8px;"></i>';
+                }
+            }
+            
+            // Добавление атрибутов для ARIA
+            const materialCards = document.querySelectorAll('.materials__card');
+            materialCards.forEach((card, index) => {
+                card.setAttribute('aria-label', card.querySelector('.materials__content-title').textContent);
+                card.setAttribute('role', 'button');
+                card.setAttribute('tabindex', '0');
+            });
+            
+            // Обработка нажатия Enter на карточках
+            materialCards.forEach(card => {
+                card.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+            });
+        }, 100);
+    });
+</script>
+{% endblock %}

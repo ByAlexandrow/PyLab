@@ -1,0 +1,614 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}PyLab - Practice Exercises{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Exercises Container */
+    .exercises-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    /* Header */
+    .exercises-header {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .exercises-header h1 {
+        font-size: 2.2rem;
+        color: var(--color-text-light);
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+
+    .exercises-header h1 i {
+        color: var(--color-accent-primary);
+        margin-right: 10px;
+    }
+
+    .exercises-header p {
+        color: var(--color-text-secondary);
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .filter-btn {
+        background: var(--color-bg-secondary);
+        border: 1px solid var(--color-border-primary);
+        color: var(--color-text-secondary);
+        padding: 10px 20px;
+        border-radius: var(--radius-md);
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .filter-btn:hover {
+        background: var(--color-bg-hover);
+        color: var(--color-text-primary);
+    }
+
+    .filter-btn.active {
+        background: rgba(126, 231, 135, 0.1);
+        color: var(--color-accent-primary);
+        border-color: var(--color-accent-primary);
+    }
+
+    /* Categories Grid */
+    .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+
+    @media (max-width: 768px) {
+        .categories-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Category Card */
+    .category-card {
+        background: var(--color-bg-secondary);
+        border: 1px solid var(--color-border-primary);
+        border-radius: var(--radius-lg);
+        padding: 25px;
+        transition: all 0.3s ease;
+    }
+
+    .category-card:hover {
+        border-color: var(--color-accent-primary);
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .category-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 15px;
+    }
+
+    .category-title {
+        font-size: 1.3rem;
+        color: var(--color-text-light);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .category-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(126, 231, 135, 0.1);
+        color: var(--color-accent-primary);
+        border-radius: var(--radius-md);
+        font-size: 1.2rem;
+    }
+
+    .category-progress {
+        font-size: 0.9rem;
+        color: var(--color-accent-primary);
+        font-weight: 500;
+    }
+
+    .category-description {
+        color: var(--color-text-secondary);
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+
+    /* Topics List */
+    .topics-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .topic-item {
+        background: var(--color-bg-primary);
+        border: 1px solid var(--color-border-primary);
+        border-radius: var(--radius-md);
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .topic-item:hover {
+        border-color: var(--color-accent-primary);
+        transform: translateX(3px);
+    }
+
+    .topic-item.completed {
+        border-left: 3px solid var(--color-accent-primary);
+    }
+
+    .topic-status {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 2px solid var(--color-border-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: all 0.2s ease;
+    }
+
+    .topic-item.completed .topic-status {
+        background: var(--color-accent-primary);
+        border-color: var(--color-accent-primary);
+        color: var(--color-bg-primary);
+    }
+
+    .topic-item.completed .topic-status i {
+        font-size: 0.7rem;
+        display: block;
+    }
+
+    .topic-content {
+        flex: 1;
+    }
+
+    .topic-title {
+        font-weight: 600;
+        color: var(--color-text-light);
+        margin-bottom: 5px;
+        font-size: 1rem;
+    }
+
+    .topic-meta {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 0.85rem;
+    }
+
+    .topic-difficulty {
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-weight: 500;
+    }
+
+    .difficulty-easy {
+        background: rgba(126, 231, 135, 0.1);
+        color: var(--color-accent-primary);
+    }
+
+    .difficulty-medium {
+        background: rgba(255, 189, 46, 0.1);
+        color: #ffbd2e;
+    }
+
+    .difficulty-hard {
+        background: rgba(248, 81, 73, 0.1);
+        color: #f85149;
+    }
+
+    .topic-exercises {
+        color: var(--color-text-secondary);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+        background: var(--color-bg-secondary);
+        border: 1px solid var(--color-border-primary);
+        border-radius: var(--radius-lg);
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--color-accent-primary);
+        line-height: 1;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: var(--color-text-secondary);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .exercises-header h1 {
+            font-size: 1.8rem;
+        }
+        
+        .filter-bar {
+            justify-content: flex-start;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .topic-meta {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="exercises-container">
+    <!-- Header -->
+    <div class="exercises-header">
+        <h1><i class="bi bi-code-slash"></i>Practice Exercises</h1>
+        <p>Solve problems, build skills, and track your progress</p>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value">24</div>
+                <div class="stat-label">Exercises Solved</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">7</div>
+                <div class="stat-label">Day Streak</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">85%</div>
+                <div class="stat-label">Accuracy</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">3</div>
+                <div class="stat-label">Categories</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">
+            <i class="bi bi-grid"></i>
+            All Topics
+        </button>
+        <button class="filter-btn" data-filter="in-progress">
+            <i class="bi bi-play-circle"></i>
+            In Progress
+        </button>
+        <button class="filter-btn" data-filter="completed">
+            <i class="bi bi-check-circle"></i>
+            Completed
+        </button>
+        <button class="filter-btn" data-filter="easy">
+            <i class="bi bi-circle"></i>
+            Easy
+        </button>
+        <button class="filter-btn" data-filter="medium">
+            <i class="bi bi-circle-half"></i>
+            Medium
+        </button>
+        <button class="filter-btn" data-filter="hard">
+            <i class="bi bi-circle-fill"></i>
+            Hard
+        </button>
+    </div>
+
+    <!-- Categories Grid -->
+    <div class="categories-grid">
+        <!-- Category 1 -->
+        <div class="category-card" data-progress="60">
+            <div class="category-header">
+                <h3 class="category-title">
+                    <div class="category-icon">
+                        <i class="bi bi-code-slash"></i>
+                    </div>
+                    Python Basics
+                </h3>
+                <div class="category-progress">60%</div>
+            </div>
+            
+            <p class="category-description">
+                Master fundamental Python concepts and syntax.
+            </p>
+            
+            <div class="topics-list">
+                <a href="#" class="topic-item completed">
+                    <div class="topic-status">
+                        <i class="bi bi-check"></i>
+                    </div>
+                    <div class="topic-content">
+                        <div class="topic-title">Variables & Data Types</div>
+                        <div class="topic-meta">
+                            <span class="topic-difficulty difficulty-easy">Easy</span>
+                            <span class="topic-exercises">8/8 solved</span>
+                        </div>
+                    </div>
+                </a>
+                
+                <a href="#" class="topic-item completed">
+                    <div class="topic-status">
+                        <i class="bi bi-check"></i>
+                    </div>
+                    <div class="topic-content">
+                        <div class="topic-title">Operators</div>
+                        <div class="topic-meta">
+                            <span class="topic-difficulty difficulty-easy">Easy</span>
+                            <span class="topic-exercises">6/6 solved</span>
+                        </div>
+                    </div>
+                </a>
+                
+                <a href="#" class="topic-item">
+                    <div class="topic-status"></div>
+                    <div class="topic-content">
+                        <div class="topic-title">Conditionals</div>
+                        <div class="topic-meta">
+                            <span class="topic-difficulty difficulty-medium">Medium</span>
+                            <span class="topic-exercises">4/8 solved</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Category 2 -->
+        <div class="category-card" data-progress="25">
+            <div class="category-header">
+                <h3 class="category-title">
+                    <div class="category-icon">
+                        <i class="bi bi-arrow-repeat"></i>
+                    </div>
+                    Loops
+                </h3>
+                <div class="category-progress">25%</div>
+            </div>
+            
+            <p class="category-description">
+                Control program flow with loops and iteration.
+            </p>
+            
+            <div class="topics-list">
+                <a href="#" class="topic-item completed">
+                    <div class="topic-status">
+                        <i class="bi bi-check"></i>
+                    </div>
+                    <div class="topic-content">
+                        <div class="topic-title">For Loops</div>
+                        <div class="topic-meta">
+                            <span class="topic-difficulty difficulty-easy">Easy</span>
+                            <span class="topic-exercises">5/5 solved</span>
+                        </div>
+                    </div>
+                </a>
+                
+                <a href="#" class="topic-item">
+                    <div class="topic-status"></div>
+                    <div class="topic-content">
+                        <div class="topic-title">While Loops</div>
+                        <div class="topic-meta">
+                            <span class="topic-difficulty difficulty-medium">Medium</span>
+                            <span class="topic-exercises">1/6 solved</span>
+                        </div>
+                    </div>
+                </a>
+                
+                <a href="#" class="topic-item">
+                    <div class="topic-status"></div>
+                    <div class="topic-content">
+                        <div class="topic-title">List Comprehensions</div>
+                        <div class="topic-meta">
+                            <span class="topic-difficulty difficulty-hard">Hard</span>
+                            <span class="topic-exercises">0/8 solved</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Category 3 -->
+        <div class="category-card" data-progress="0">
+            <div class="category-header">
+                <h3 class="category-title">
+                    <div class="category-icon">
+                        <i class="bi bi-puzzle"></i>
+                    </div>
+                    Functions
+                </h3>
+                <div class="category-progress">0%</div>
+            </div>
+            
+            <p class="category-description">
+                Create reusable code with functions and modules.
+            </p>
+            
+            <div class="topics-list">
+                <a href="#" class="topic-item">
+                    <div class="topic-status"></div>
+                    <div class="topic-content">
+                        <div class="topic-title">Function Basics</div>
+                        <div class="topic-meta">
+                            <span class="topic-difficulty difficulty-medium">Medium</span>
+                            <span class="topic-exercises">0/10 solved</span>
+                        </div>
+                    </div>
+                </a>
+                
+                <a href="#" class="topic-item">
+                    <div class="topic-status"></div>
+                    <div class="topic-content">
+                        <div class="topic-title">Parameters</div>
+                        <div class="topic-meta">
+                            <span class="topic-difficulty difficulty-hard">Hard</span>
+                            <span class="topic-exercises">0/8 solved</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Filter functionality
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const categoryCards = document.querySelectorAll('.category-card');
+        const topicItems = document.querySelectorAll('.topic-item');
+        
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Update active button
+                filterBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.dataset.filter;
+                
+                // Filter topics and categories
+                categoryCards.forEach(card => {
+                    let hasVisibleTopics = false;
+                    
+                    card.querySelectorAll('.topic-item').forEach(topic => {
+                        const isCompleted = topic.classList.contains('completed');
+                        const difficulty = topic.querySelector('.topic-difficulty').className.includes('easy') ? 'easy' :
+                                         topic.querySelector('.topic-difficulty').className.includes('medium') ? 'medium' : 'hard';
+                        
+                        let showTopic = true;
+                        
+                        switch(filter) {
+                            case 'in-progress':
+                                showTopic = !isCompleted;
+                                break;
+                            case 'completed':
+                                showTopic = isCompleted;
+                                break;
+                            case 'easy':
+                                showTopic = difficulty === 'easy';
+                                break;
+                            case 'medium':
+                                showTopic = difficulty === 'medium';
+                                break;
+                            case 'hard':
+                                showTopic = difficulty === 'hard';
+                                break;
+                            case 'all':
+                            default:
+                                showTopic = true;
+                        }
+                        
+                        topic.style.display = showTopic ? 'flex' : 'none';
+                        if (showTopic) hasVisibleTopics = true;
+                    });
+                    
+                    // Show/hide category based on visible topics
+                    card.style.display = hasVisibleTopics || filter === 'all' ? 'block' : 'none';
+                });
+            });
+        });
+        
+        // Toggle topic completion
+        topicItems.forEach(topic => {
+            topic.addEventListener('click', function(e) {
+                if (e.target.classList.contains('topic-status')) {
+                    e.preventDefault();
+                    
+                    // Toggle completion
+                    this.classList.toggle('completed');
+                    const status = this.querySelector('.topic-status');
+                    
+                    if (this.classList.contains('completed')) {
+                        status.innerHTML = '<i class="bi bi-check"></i>';
+                    } else {
+                        status.innerHTML = '';
+                    }
+                    
+                    // Update category progress
+                    updateCategoryProgress(this.closest('.category-card'));
+                }
+            });
+        });
+        
+        // Update category progress
+        function updateCategoryProgress(card) {
+            const topics = card.querySelectorAll('.topic-item');
+            const completed = card.querySelectorAll('.topic-item.completed');
+            const progress = Math.round((completed.length / topics.length) * 100);
+            
+            const progressEl = card.querySelector('.category-progress');
+            if (progressEl) {
+                progressEl.textContent = progress + '%';
+                card.dataset.progress = progress;
+            }
+        }
+    });
+</script>
+{% endblock %}
