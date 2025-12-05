@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-f5p8w%+m#$hjta+9@_aoi15#2@fd-ieqh(d41ugv4hov4@d(fy
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'projects.apps.ProjectsConfig',
     'chapters.apps.ChaptersConfig',
     'homepage.apps.HomepageConfig',
+    'pages.apps.PagesConfig',
     'tests.apps.TestsConfig',
     'tasks.apps.TasksConfig',
     'users.apps.UsersConfig',
@@ -154,6 +155,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/users/profile/'
 LOGOUT_REDIRECT_URL = 'users:logout'
 LOGIN_URL = 'users:login'
+
+CSRF_FAILURE_VIEW = 'pages.views.csrf_failure'
 
 TINYMCE_DEFAULT_CONFIG = {
     'height': 400,

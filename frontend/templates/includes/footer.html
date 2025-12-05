@@ -21,7 +21,7 @@
             <div class="footer-quick-links">
                 <h4 class="footer-heading">Quick Links</h4>
                 <div class="quick-links-grid">
-                    <a href="/chapters/chapters/" class="quick-link">
+                    <a href="{% url 'chapters:chapters' %}" class="quick-link">
                         <i class="bi bi-arrow-right"></i>
                         All Chapters
                     </a>
@@ -53,10 +53,10 @@
                         <i class="bi bi-book"></i>
                         Learning
                     </h4>
-                    <a href="/chapters/chapters/" class="footer-link">Chapters</a>
-                    <a href="" class="footer-link">Tests & Quizzes</a>
-                    <a href="" class="footer-link">Exercises</a>
-                    <a href="" class="footer-link">Projects</a>
+                    <a href="{% url 'chapters:chapters' %}" class="footer-link">Chapters</a>
+                    <a href="/tests/tests/" class="footer-link">Tests</a>
+                    <a href="/projects/projects/" class="footer-link">Projects</a>
+                    <a href="/tasks/tasks/" class="footer-link">Tasks</a>
                 </div>
                 
                 <div class="footer-column">
@@ -162,7 +162,7 @@
             </div>
 
             <!-- Кнопка "Наверх" -->
-            <a href="#" class="back-to-top" id="footerBackToTop">
+            <a href="{% url 'homepage:index' %}" class="back-to-top" id="footerBackToTop">
                 <i class="bi bi-chevron-up"></i>
                 Back to top
             </a>

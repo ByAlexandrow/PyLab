@@ -1,0 +1,685 @@
+{% extends "base.html" %}
+
+{% block title %}Ошибка сервера - PyLab{% endblock %}
+
+{% block content %}
+<div class="error-state error-state--server">
+    <!-- Иконка и анимация -->
+    <div class="error-state__server-animation">
+        <div class="error-state__server-icon">
+            <i class="bi bi-server"></i>
+            <div class="error-state__server-pulse"></div>
+            <div class="error-state__server-pulse error-state__server-pulse--delay"></div>
+        </div>
+        
+        <div class="error-state__server-status">
+            <span class="error-state__server-code">500</span>
+            <div class="error-state__server-indicator">
+                <span class="error-state__server-dot error-state__server-dot--red"></span>
+                <span class="error-state__server-text">SERVER ERROR</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Основное сообщение -->
+    <div class="error-state__content">
+        <h1 class="error-state__title">Что-то пошло не так</h1>
+        <p class="error-state__description">
+            На сервере произошла внутренняя ошибка. Наша команда уже уведомлена 
+            и работает над решением проблемы.
+        </p>
+        
+        <!-- Таймер перезагрузки -->
+        <div class="error-state__timer">
+            <div class="error-state__timer-circle">
+                <svg width="80" height="80" viewBox="0 0 80 80">
+                    <circle class="error-state__timer-bg" cx="40" cy="40" r="36"></circle>
+                    <circle class="error-state__timer-progress" cx="40" cy="40" r="36"></circle>
+                </svg>
+                <span class="error-state__timer-count">60</span>
+            </div>
+            <p class="error-state__timer-text">Автоматическая перезагрузка через</p>
+        </div>
+        
+        <!-- Что можно сделать -->
+        <div class="error-state__solutions">
+            <h3 class="error-state__solutions-title">
+                <i class="bi bi-lightbulb-fill"></i>
+                Что можно сделать:
+            </h3>
+            
+            <div class="error-state__solutions-grid">
+                <div class="error-state__solution">
+                    <div class="error-state__solution-icon">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </div>
+                    <div class="error-state__solution-content">
+                        <h4>Обновите страницу</h4>
+                        <p>Нажмите F5 или Ctrl+R для перезагрузки</p>
+                    </div>
+                </div>
+                
+                <div class="error-state__solution">
+                    <div class="error-state__solution-icon">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <div class="error-state__solution-content">
+                        <h4>Подождите немного</h4>
+                        <p>Попробуйте снова через несколько минут</p>
+                    </div>
+                </div>
+                
+                <div class="error-state__solution">
+                    <div class="error-state__solution-icon">
+                        <i class="bi bi-chat-dots"></i>
+                    </div>
+                    <div class="error-state__solution-content">
+                        <h4>Сообщите о проблеме</h4>
+                        <p>Напишите нам в поддержку</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Действия -->
+        <div class="error-state__actions">
+            <button onclick="location.reload()" class="chapters__btn chapters__btn--reload">
+                <i class="bi bi-arrow-clockwise chapters__btn-icon"></i>
+                <span>Перезагрузить</span>
+            </button>
+            
+            <a href="{% url 'homepage:index' %}" class="chapters__btn">
+                <i class="bi bi-house-fill chapters__btn-icon"></i>
+                <span>На главную</span>
+            </a>
+            
+            <a href="mailto:support@pylab.dev?subject=500%20Error%20Report" class="chapters__btn chapters__btn--outline">
+                <i class="bi bi-envelope-fill chapters__btn-icon"></i>
+                <span>Сообщить</span>
+            </a>
+        </div>
+        
+        <!-- Статус системы -->
+        <div class="error-state__system-status">
+            <div class="error-state__system-item">
+                <span class="error-state__system-label">Статус сервера:</span>
+                <span class="error-state__system-value error-state__system-value--error">
+                    <i class="bi bi-dot"></i> Ошибка
+                </span>
+            </div>
+            <div class="error-state__system-item">
+                <span class="error-state__system-label">Время ответа:</span>
+                <span class="error-state__system-value">-- ms</span>
+            </div>
+            <div class="error-state__system-item">
+                <span class="error-state__system-label">Последняя проверка:</span>
+                <span class="error-state__system-value" id="lastCheck">--</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Техническая информация -->
+    <div class="error-state__tech">
+        <div class="error-state__tech-header">
+            <i class="bi bi-terminal-fill"></i>
+            <span>Техническая информация</span>
+        </div>
+        <div class="error-state__tech-content">
+            <code class="error-state__tech-code">
+                <span class="error-state__tech-line">HTTP 500 - Internal Server Error</span>
+                <span class="error-state__tech-line">Timestamp: {% now "Y-m-d H:i:s" %}</span>
+                <span class="error-state__tech-line">Request ID: {{ request_id|default:"N/A" }}</span>
+            </code>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+/* ============================================
+   Блок: error-state--server (500 ошибка)
+   ============================================ */
+
+.error-state--server {
+    background: linear-gradient(135deg, var(--color-bg-secondary) 0%, #1a1f2c 100%);
+    border: 1px solid rgba(248, 81, 73, 0.2);
+}
+
+.error-state--server::before {
+    background: linear-gradient(90deg, #f85149, #ff6b6b);
+    animation: errorPulse 2s ease-in-out infinite;
+}
+
+@keyframes errorPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Анимация сервера */
+.error-state__server-animation {
+    position: relative;
+    margin-bottom: 50px;
+}
+
+.error-state__server-icon {
+    position: relative;
+    font-size: 6rem;
+    color: #f85149;
+    margin-bottom: 20px;
+    animation: serverShake 4s ease-in-out infinite;
+}
+
+@keyframes serverShake {
+    0%, 100% { transform: translateY(0); }
+    20%, 60% { transform: translateY(-5px); }
+    40%, 80% { transform: translateY(5px); }
+}
+
+.error-state__server-pulse {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 140px;
+    height: 140px;
+    background: radial-gradient(circle, rgba(248, 81, 73, 0.4) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: serverPulse 3s ease-out infinite;
+}
+
+.error-state__server-pulse--delay {
+    animation-delay: 1.5s;
+}
+
+@keyframes serverPulse {
+    0% { opacity: 1; transform: translate(-50%, -50%) scale(0.8); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
+}
+
+.error-state__server-status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.error-state__server-code {
+    font-size: 5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #f85149, #ff6b6b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 30px rgba(248, 81, 73, 0.3);
+}
+
+.error-state__server-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    background: rgba(248, 81, 73, 0.1);
+    border-radius: 20px;
+    border: 1px solid rgba(248, 81, 73, 0.3);
+}
+
+.error-state__server-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    animation: dotBlink 1.5s infinite;
+}
+
+.error-state__server-dot--red {
+    background: #f85149;
+    box-shadow: 0 0 10px rgba(248, 81, 73, 0.5);
+}
+
+@keyframes dotBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+.error-state__server-text {
+    color: #f85149;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+/* Таймер */
+.error-state__timer {
+    margin: 40px auto;
+    text-align: center;
+    max-width: 200px;
+}
+
+.error-state__timer-circle {
+    position: relative;
+    margin: 0 auto 15px;
+}
+
+.error-state__timer-bg {
+    fill: none;
+    stroke: var(--color-border-primary);
+    stroke-width: 4;
+}
+
+.error-state__timer-progress {
+    fill: none;
+    stroke: #f85149;
+    stroke-width: 4;
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+    stroke-dasharray: 226;
+    stroke-dashoffset: 226;
+    transition: stroke-dashoffset 1s linear;
+}
+
+.error-state__timer-count {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+}
+
+.error-state__timer-text {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Решения */
+.error-state__solutions {
+    margin: 50px 0;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.error-state__solutions-title {
+    color: var(--color-text-light);
+    font-size: 1.3rem;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.error-state__solutions-title i {
+    color: #ffd700;
+}
+
+.error-state__solutions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.error-state__solution {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 20px;
+    background: var(--color-bg-primary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border-primary);
+    transition: all 0.3s ease;
+}
+
+.error-state__solution:hover {
+    transform: translateY(-3px);
+    border-color: rgba(126, 231, 135, 0.3);
+    box-shadow: var(--shadow-sm);
+}
+
+.error-state__solution-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(126, 231, 135, 0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.error-state__solution-icon i {
+    font-size: 1.5rem;
+    color: var(--color-accent-primary);
+}
+
+.error-state__solution-content h4 {
+    color: var(--color-text-light);
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.error-state__solution-content p {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Кнопка перезагрузки с особым стилем */
+.chapters__btn--reload {
+    background: linear-gradient(135deg, #f85149, #ff6b6b);
+}
+
+.chapters__btn--reload:hover {
+    background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+    transform: translateY(-2px) rotate(5deg);
+}
+
+/* Статус системы */
+.error-state__system-status {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin: 30px 0;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.error-state__system-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.error-state__system-item:last-child {
+    border-bottom: none;
+}
+
+.error-state__system-label {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+}
+
+.error-state__system-value {
+    color: var(--color-text-light);
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.error-state__system-value--error {
+    color: #f85149;
+}
+
+.error-state__system-value--error i {
+    animation: errorPulse 1s infinite;
+}
+
+/* Техническая информация */
+.error-state__tech {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.error-state__tech-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-text-light);
+    font-weight: 600;
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+.error-state__tech-header i {
+    color: var(--color-accent-primary);
+}
+
+.error-state__tech-content {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    overflow-x: auto;
+}
+
+.error-state__tech-code {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: #8b949e;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.error-state__tech-line {
+    display: block;
+}
+
+.error-state__tech-line:first-child {
+    color: #f85149;
+}
+
+/* ============================================
+   Адаптивность
+   ============================================ */
+
+@media (max-width: 768px) {
+    .error-state__server-code {
+        font-size: 4rem;
+    }
+    
+    .error-state__server-icon {
+        font-size: 5rem;
+    }
+    
+    .error-state__solutions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .error-state__system-status {
+        grid-template-columns: 1fr;
+    }
+    
+    .error-state__actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .error-state__actions .chapters__btn {
+        width: 100%;
+        max-width: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .error-state__server-code {
+        font-size: 3.2rem;
+    }
+    
+    .error-state__server-icon {
+        font-size: 4rem;
+    }
+    
+    .error-state__timer {
+        transform: scale(0.9);
+    }
+    
+    .error-state__solution {
+        padding: 15px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Таймер перезагрузки
+    const timerCount = document.querySelector('.error-state__timer-count');
+    const timerProgress = document.querySelector('.error-state__timer-progress');
+    let timeLeft = 60;
+    
+    const circumference = 2 * Math.PI * 36;
+    const interval = setInterval(() => {
+        timeLeft--;
+        const progress = (60 - timeLeft) / 60;
+        const offset = circumference * (1 - progress);
+        
+        timerCount.textContent = timeLeft;
+        timerProgress.style.strokeDashoffset = offset;
+        
+        if (timeLeft <= 0) {
+            clearInterval(interval);
+            location.reload();
+        }
+    }, 1000);
+    
+    // Обновление времени последней проверки
+    function updateLastCheck() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('ru-RU', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        document.getElementById('lastCheck').textContent = timeString;
+    }
+    
+    updateLastCheck();
+    setInterval(updateLastCheck, 10000);
+    
+    // Анимация при наведении на решения
+    const solutions = document.querySelectorAll('.error-state__solution');
+    solutions.forEach((solution, index) => {
+        solution.style.opacity = '0';
+        solution.style.transform = 'translateY(20px)';
+        solution.style.transition = `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`;
+        
+        setTimeout(() => {
+            solution.style.opacity = '1';
+            solution.style.transform = 'translateY(0)';
+        }, 100);
+    });
+    
+    // Отправка отчета об ошибке
+    const reportBtn = document.querySelector('[href*="mailto"]');
+    if (reportBtn) {
+        reportBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const subject = '500 Error Report - PyLab';
+            const body = `\n\n---\nДополнительная информация:\n• URL: ${window.location.href}\n• User Agent: ${navigator.userAgent}\n• Время: ${new Date().toLocaleString()}\n• Реферер: ${document.referrer || 'Нет'}`;
+            
+            window.location.href = `mailto:support@pylab.dev?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        });
+    }
+    
+    // Анимация пульсации при наведении на кнопку перезагрузки
+    const reloadBtn = document.querySelector('.chapters__btn--reload');
+    if (reloadBtn) {
+        reloadBtn.addEventListener('mouseenter', function() {
+            this.style.animation = 'pulseScale 0.5s ease';
+        });
+        
+        reloadBtn.addEventListener('animationend', function() {
+            this.style.animation = '';
+        });
+    }
+    
+    // Периодическая проверка статуса сервера
+    async function checkServerStatus() {
+        try {
+            const response = await fetch('/health-check/');
+            if (response.ok) {
+                clearInterval(timerInterval);
+                // Если сервер восстановился, покажем сообщение
+                showServerRecovered();
+            }
+        } catch (error) {
+            console.log('Сервер еще не восстановился');
+        }
+    }
+    
+    const timerInterval = setInterval(checkServerStatus, 5000);
+    
+    function showServerRecovered() {
+        const message = document.createElement('div');
+        message.className = 'server-recovered';
+        message.innerHTML = `
+            <div class="server-recovered__content">
+                <i class="bi bi-check-circle-fill"></i>
+                <div>
+                    <strong>Сервер восстановлен!</strong>
+                    <p>Проблема решена, вы можете продолжить работу.</p>
+                </div>
+                <button onclick="location.reload()" class="chapters__btn chapters__btn--small">
+                    Перезагрузить
+                </button>
+            </div>
+        `;
+        
+        document.querySelector('.error-state').appendChild(message);
+        
+        // Стили для сообщения о восстановлении
+        const style = document.createElement('style');
+        style.textContent = `
+            .server-recovered {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                left: 20px;
+                background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+                color: var(--color-bg-primary);
+                padding: 20px;
+                border-radius: var(--radius-lg);
+                box-shadow: var(--shadow-lg);
+                z-index: 1000;
+                animation: slideUp 0.5s ease;
+            }
+            
+            .server-recovered__content {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 15px;
+            }
+            
+            .server-recovered__content i {
+                font-size: 2rem;
+                flex-shrink: 0;
+            }
+            
+            .chapters__btn--small {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+                white-space: nowrap;
+            }
+            
+            @keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(100px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+});
+</script>
+{% endblock %}

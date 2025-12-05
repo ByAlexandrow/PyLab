@@ -1,6 +1,13 @@
-from django.shortcuts import render
+from django.views.generic import TemplateView
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 
-def index(request):
-    """Showing of all chapters with their topics."""
-    return render(request, 'homepage/index.html')
+class HomepageView(TemplateView):
+    """."""
+    template_name = 'homepage/index.html'
+
+    @method_decorator(cache_page(60 * 60))
+    def dispatch(self, request, *args, **kwargs):
+        """."""
+        return super().dispatch(request, *args, **kwargs)
