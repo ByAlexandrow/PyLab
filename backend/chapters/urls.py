@@ -1,11 +1,11 @@
 from django.urls import path
 
-from chapters import views
+from . import views
 
 
 app_name = 'chapters'
 
 urlpatterns = [
-    path('', views.chapters, name='chapters'),
-    path('topic/<int:id>/', views.topic, name='topic'),
+    path('', views.ChapterListView.as_view(), name='chapters'),
+    path('topic/<int:id>/', views.TopicDetailView.as_view(), name='topic'),
 ]
