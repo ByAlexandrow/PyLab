@@ -60,6 +60,6 @@ class Topic(BaseModelMixin, OrderingMixin, models.Model):
         ordering = ('order',)
         verbose_name = 'Topic'
         verbose_name_plural = 'Topics'
-    
+
     def __str__(self):
         return f'{self.title} - {self.chapter} - {self.order} - {self.is_published}'
