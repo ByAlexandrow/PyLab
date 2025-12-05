@@ -1,3 +1,19 @@
+/* Отключаем анимации для preload */
+body.preload main,
+body.preload .content,
+body.preload .fade-in,
+body.preload .fade-in-up,
+body.preload .slide-in-left {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+}
+
+/* Анимации включаются только после готовности */
+body.content-ready .fade-in {
+    animation: fadeIn var(--transition-medium) forwards;
+}
+
 :root {
     /* Цветовая палитра */
     --color-bg-primary: #0d1117;    /* GitHub Dark */
