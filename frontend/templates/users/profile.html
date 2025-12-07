@@ -690,13 +690,13 @@
         <div class="welcome-header">
             <div class="welcome-text">
                 <h1>Welcome back, <span>{{ user.username }}</span>! 👋</h1>
-                <p>Continue your Python learning journey.<br>Here's your progress overview.</p>
+                <p>Continue your Python learning journey. Here's your progress:</p>
             </div>
             
             <div class="welcome-stats">
                 <div class="stat-item">
                     <div class="stat-value">{{ user_stats.days_streak|default:"0" }}</div>
-                    <div class="stat-label">Day Streak</div>
+                    <div class="stat-label">Streak</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-value">{{ user_stats.completed_topics|default:"0" }}</div>
@@ -704,7 +704,7 @@
                 </div>
                 <div class="stat-item">
                     <div class="stat-value">{{ user_stats.total_xp|default:"0" }}</div>
-                    <div class="stat-label">XP Points</div>
+                    <div class="stat-label">EXP</div>
                 </div>
             </div>
         </div>

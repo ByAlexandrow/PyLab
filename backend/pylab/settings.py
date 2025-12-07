@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    'database.apps.DatabaseConfig',
     'projects.apps.ProjectsConfig',
     'chapters.apps.ChaptersConfig',
     'homepage.apps.HomepageConfig',
