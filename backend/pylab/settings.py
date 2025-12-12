@@ -34,11 +34,12 @@ ALLOWED_HOSTS = ['127.0.0.1']
 INSTALLED_APPS = [
     'database.apps.DatabaseConfig',
     'projects.apps.ProjectsConfig',
+    'problems.apps.ProblemsConfig',
     'chapters.apps.ChaptersConfig',
     'homepage.apps.HomepageConfig',
+    'manuals.apps.ManualsConfig',
     'pages.apps.PagesConfig',
     'tests.apps.TestsConfig',
-    'tasks.apps.TasksConfig',
     'users.apps.UsersConfig',
     'django.contrib.admin',
     'django.contrib.auth',

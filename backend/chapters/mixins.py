@@ -3,6 +3,7 @@ from django.db import models
 
 class BaseModelMixin(models.Model):
     """Mixin for common model's fields."""
+
     title = models.CharField(
         max_length=30,
         null=False,

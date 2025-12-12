@@ -24,9 +24,10 @@ urlpatterns = [
     path('pages/', include('pages.urls', namespace='pages')),
     path('users/', include('users.urls', namespace='users')),
     path('tests/', include('tests.urls', namespace='tests')),
-    path('tasks/', include('tasks.urls', namespace='tasks')),
+    path('manuals/', include('manuals.urls', namespace='manuals')),
     path('database/', include('database.urls', namespace='database')),
     path('projects/', include('projects.urls', namespace='projects')),
+    path('problems/', include('problems.urls', namespace='problems')),
     path('chapters/', include('chapters.urls', namespace='chapters')),
     path('', include('homepage.urls', namespace='homepage'))
 ]
