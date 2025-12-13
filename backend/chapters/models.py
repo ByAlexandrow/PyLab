@@ -41,8 +41,14 @@ class Topic(BaseModelMixin, OrderingMixin, models.Model):
     difficulty = models.CharField(
         max_length=10,
         choices=DIFFICULTY_CHOICES,
-        default='easy',
+        default='Easy',
         verbose_name='Difficulty Level'
+    )
+    slug = models.SlugField(
+        max_length=100,
+        unique=True,
+        default='in-python',
+        verbose_name='Slug'
     )
     estimated_minutes = models.PositiveIntegerField(
         default=10,

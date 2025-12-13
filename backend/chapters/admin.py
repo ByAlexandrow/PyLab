@@ -20,7 +20,7 @@ class ChapterAdmin(admin.ModelAdmin):
 class TopicAdmin(admin.ModelAdmin):
     fields = (
         'title', 'description', 'chapter',
-        'content', 'order', 'is_published',
+        'content', 'slug', 'order', 'is_published',
         'difficulty', 'estimated_minutes',
         'is_free'
     )

@@ -1,0 +1,13 @@
+title,description,order,is_published
+Basics,Description,"1","1"
+Functions,Description,"2","1"
+Data structures,Description,"3","1"
+OOP,Description,"6","1"
+Files,Description,"4","1"
+Modules & packages,Description,"5","1"
+Introduction,Description,"0","1"
+Exceptions & debugging,Description,"7","1"
+Interators & generators,Description,"8","1"
+Decoratos,Description,"9","1"
+Packages,Description,"10","1"
+Algorithms,Description,"11","1"

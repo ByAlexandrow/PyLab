@@ -3,15 +3,15 @@
 {% block content %}
 <div class="topic">
     <div class="topic__container">
-        <!-- Прогресс чтения -->
+        <!-- ПReading progress -->
         <div class="scroll-controls__progress">
             <div class="scroll-controls__progress-bar" id="readingProgress"></div>
         </div>
 
-        <!-- Заголовок темы -->
+        <!-- Topic's title -->
         <h1 class="topic__title">{{ topic.title }}</h1>
 
-        <!-- Мета-информация -->
+        <!-- Meta information -->
         <div class="topic__meta">
             <span class="topic__chapter">
                 <i class="topic__chapter-icon bi bi-book"></i>
@@ -23,7 +23,7 @@
             </span>
         </div>
 
-        <!-- Основное содержание -->
+        <!-- Main content -->
         <div class="topic__content">
             {% if topic.content %}
                 <div class="topic__body">
@@ -38,7 +38,7 @@
                 </div>
             {% endif %}
         </div>
-        <!-- Практические материалы -->
+        <!-- Practice -->
         <div class="materials">
             <h3 class="materials__title">
                 <i class="materials__title-icon bi bi-rocket-takeoff"></i>
@@ -69,7 +69,7 @@
                         <i class="bi bi-arrow-right"></i>
                     </div>
                 </a>
-                <a href="tasks/tasks/" class="materials__card materials__card--exercises">
+                <a href="/tasks/tasks/" class="materials__card materials__card--exercises">
                     <div class="materials__icon">
                         <i class="bi bi-code-slash"></i>
                     </div>
@@ -83,24 +83,24 @@
                 </a>
             </div>
         </div>
-        <!-- Навигация между темами -->
+        <!-- Navigation -->
         <div class="topic-nav">
-                <a href="" class="topic-nav__btn topic-nav__btn--prev">
-                    <i class="topic-nav__btn-icon bi bi-chevron-left"></i>
-                    Prev
-                </a>
+            <a href="" class="topic-nav__btn topic-nav__btn--prev">
+                <i class="topic-nav__btn-icon bi bi-chevron-left"></i>
+                Prev
+            </a>
             <a href="" class="topic-nav__btn topic-nav__btn--chapters">
                 <i class="bi bi-list-ul"></i>
                 Chapter Topics
             </a>
-                <a href="" class="topic-nav__btn topic-nav__btn--next">
-                    Next
-                    <i class="topic-nav__btn-icon bi bi-chevron-right"></i>
-                </a>
+            <a href="" class="topic-nav__btn topic-nav__btn--next">
+                Next
+                <i class="topic-nav__btn-icon bi bi-chevron-right"></i>
+            </a>
         </div>
     </div>
 
-    <!-- Кнопка "Наверх" -->
+    <!-- Up-button -->
     <a href="#" class="scroll-controls__top-btn" id="backToTop">
         <i class="bi bi-chevron-up"></i>
     </a>

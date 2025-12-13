@@ -14,7 +14,7 @@ class TagAdmin(admin.ModelAdmin):
 class ManualAdmin(admin.ModelAdmin):
     fields = (
         'title', 'author', 'description',
-        'manual', 'level', 'tag', 'is_published'
+        'manual', 'slug', 'level', 'tag', 'is_published'
     )
     list_display = ('title', 'author', 'level', 'is_published')
     search_fields = ('title', 'author', 'level', 'tag')

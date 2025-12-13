@@ -7,41 +7,37 @@ from chapters.models import Chapter, Topic
 
 
 class ChapterListView(ListView):
-    """
-    Список глав с оптимизированными запросами.
-    """
+    """Chapter's list."""
+
     model = Chapter
     template_name = 'chapters/chapters.html'
     context_object_name = 'chapters'
 
     def get_queryset(self):
-        """
-        Оптимизированный queryset с prefetch_related.
-        """
-        # Создаем уникальный ключ кеша
+        """Queryset with prefetch_related."""
+
+        # Unique cash's key
         cache_key = f'chapters_qs_{self.request.user.is_authenticated}'
 
-        # Пробуем получить из кеша
+        # Try to get from existed cash
         queryset = cache.get(cache_key)
 
         if queryset is not None:
             return queryset
 
-        # Базовый queryset - только опубликованные главы
+        # Published chapters only
         queryset = Chapter.objects.filter(is_published=True)
 
-        # Создаем отдельный queryset для топиков в зависимости от пользователя
         if self.request.user.is_authenticated:
-            # Для авторизованных: все опубликованные топики
+            # Show all published topics
             topics_qs = Topic.objects.filter(is_published=True)
         else:
-            # Для анонимных: только бесплатные и опубликованные топики
+            # Show only free topics
             topics_qs = Topic.objects.filter(is_published=True, is_free=True)
 
-        # Упорядочиваем топики
         topics_qs = topics_qs.order_by('order')
 
-        # Предзагружаем топики
+        # Preload topics
         queryset = queryset.prefetch_related(
             Prefetch(
                 'topics',
@@ -50,19 +46,17 @@ class ChapterListView(ListView):
             )
         ).order_by('order')
 
-        # Сохраняем в кеш на 5 минут
+        # Save cash for 5 mins
         cache.set(cache_key, queryset, 60 * 5)
 
         return queryset
 
     def get_context_data(self, **kwargs):
-        """
-        Контекст с подсчетом топиков.
-        """
+        """Count topics."""
+
         context = super().get_context_data(**kwargs)
         chapters = context['chapters']
 
-        # Считаем топики
         total_topics = 0
         total_free_topics = 0
 
@@ -84,19 +78,16 @@ class ChapterListView(ListView):
 
 
 class TopicDetailView(DetailView):
-    """
-    Детальный просмотр топика.
-    """
+    """Topic detail."""
+
     model = Topic
     template_name = 'chapters/topic.html'
     context_object_name = 'topic'
-    pk_url_kwarg = 'id'
+    slug_url_kwarg = 'topic_slug'
 
     def get_queryset(self):
-        """
-        Фильтруем топики по доступности.
-        """
-        # Кешируем queryset
+        """Filter topics."""
+
         if self.request.user.is_authenticated:
             cache_key = 'topics_qs_auth'
         else:
@@ -107,40 +98,38 @@ class TopicDetailView(DetailView):
         if queryset is not None:
             return queryset
 
-        # Базовый queryset с select_related
         queryset = Topic.objects.select_related('chapter')
 
-        # Фильтруем
+        # Filter topics
         if self.request.user.is_authenticated:
             queryset = queryset.filter(is_published=True)
         else:
             queryset = queryset.filter(is_published=True, is_free=True)
 
-        # Сохраняем в кеш
+        # Save cash
         cache.set(cache_key, queryset, 60 * 5)
 
         return queryset
 
     def get_object(self, queryset=None):
-        """
-        Получаем топик с кешированием объекта.
-        """
+        """Topic with cash."""
+
         if queryset is None:
             queryset = self.get_queryset()
 
-        topic_id = self.kwargs.get('id')
+        topic_slug = self.kwargs.get('topic_slug')
 
         # Ключ кеша для объекта
         if self.request.user.is_authenticated:
-            cache_key = f'topic_obj_auth_{topic_id}'
+            cache_key = f'topic_obj_auth_{topic_slug}'
         else:
-            cache_key = f'topic_obj_anon_{topic_id}'
+            cache_key = f'topic_obj_anon_{topic_slug}'
 
         # Пробуем получить из кеша
         topic = cache.get(cache_key)
 
         if topic is None:
-            topic = get_object_or_404(queryset, pk=topic_id)
+            topic = get_object_or_404(queryset, slug=topic_slug)
             cache.set(cache_key, topic, 60 * 60)
 
         return topic
