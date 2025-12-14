@@ -24,8 +24,9 @@ class TopicAdmin(admin.ModelAdmin):
         'difficulty', 'estimated_minutes',
         'is_free'
     )
-    list_display = ('title', 'chapter', 'is_free', 'difficulty', 'order', 'is_published')
+    list_display = ('title', 'chapter__title', 'is_free', 'difficulty', 'order', 'is_published')
     search_fields = ('title', 'chapter', 'difficulty', 'order')
     list_filter = ('chapter', 'difficulty', 'is_free', 'is_published')
+    prepopulated_fields = {'slug': ('title',)}
     ordering = ('order',)
     list_per_page = 15

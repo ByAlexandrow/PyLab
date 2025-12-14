@@ -19,5 +19,6 @@ class ManualAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'level', 'is_published')
     search_fields = ('title', 'author', 'level', 'tag')
     list_filter = ('author', 'level', 'tag', 'is_published')
+    prepopulated_fields = {'slug': ('title',)}
     filter_horizontal = ('tag',)
     list_per_page = 20

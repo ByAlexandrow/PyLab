@@ -3,7 +3,7 @@
 {% block content %}
 <div class="topic">
     <div class="topic__container">
-        <!-- ПReading progress -->
+        <!-- Reading progress -->
         <div class="scroll-controls__progress">
             <div class="scroll-controls__progress-bar" id="readingProgress"></div>
         </div>
@@ -24,7 +24,7 @@
         </div>
 
         <!-- Main content -->
-        <div class="topic__content">
+        <div class="topic__content topic__content--no-scroll">
             {% if topic.content %}
                 <div class="topic__body">
                     {{ topic.content|safe }}
@@ -84,7 +84,7 @@
             </div>
         </div>
         <!-- Navigation -->
-        <div class="topic-nav">
+        <!-- <div class="topic-nav">
             <a href="" class="topic-nav__btn topic-nav__btn--prev">
                 <i class="topic-nav__btn-icon bi bi-chevron-left"></i>
                 Prev
@@ -97,7 +97,7 @@
                 Next
                 <i class="topic-nav__btn-icon bi bi-chevron-right"></i>
             </a>
-        </div>
+        </div> -->
     </div>
 
     <!-- Up-button -->
@@ -110,29 +110,22 @@
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const topicContent = document.querySelector('.topic__content');
+        // const topicContent = document.querySelector('.topic__content');
         const backToTop = document.getElementById('backToTop');
         const readingProgress = document.getElementById('readingProgress');
         
         // Прогресс чтения
-        if (topicContent && readingProgress) {
-            topicContent.addEventListener('scroll', function() {
-                // Прогресс чтения
-                const scrollPercentage = (this.scrollTop / (this.scrollHeight - this.clientHeight)) * 100;
-                readingProgress.style.width = scrollPercentage + '%';
+        if (readingProgress) {
+            window.addEventListener('scroll', function() {
+                const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (window.scrollY / windowHeight) * 100;
+                readingProgress.style.width = scrolled + '%';
                 
                 // Кнопка "Наверх"
-                if (this.scrollTop > 300) {
+                if (window.scrollY > 300) {
                     backToTop.classList.add('scroll-controls__top-btn--visible');
                 } else {
                     backToTop.classList.remove('scroll-controls__top-btn--visible');
-                }
-                
-                // Тень при скролле
-                if (this.scrollTop > 10) {
-                    this.style.boxShadow = 'inset 0 10px 10px -10px rgba(0,0,0,0.1)';
-                } else {
-                    this.style.boxShadow = 'none';
                 }
             });
         }
@@ -141,17 +134,10 @@
         if (backToTop) {
             backToTop.addEventListener('click', function(e) {
                 e.preventDefault();
-                if (topicContent) {
-                    topicContent.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
-                    });
-                } else {
-                    window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
-                    });
-                }
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
             });
         }
         
@@ -198,12 +184,10 @@
         
         // Отметка прочитанной темы
         const markAsRead = () => {
-            if (topicContent && topicContent.scrollHeight - topicContent.scrollTop - topicContent.clientHeight < 100) {
-                // Тема почти прочитана - можно сохранить в localStorage
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
                 const topicId = '{{ topic.id }}';
                 localStorage.setItem(`topic_${topicId}_read`, 'true');
                 
-                // Можно добавить визуальную индикацию
                 const chapterElement = document.querySelector('.topic__chapter');
                 if (chapterElement) {
                     chapterElement.classList.add('topic__chapter--highlight');
@@ -211,35 +195,7 @@
             }
         };
         
-        if (topicContent) {
-            topicContent.addEventListener('scroll', markAsRead);
-        }
-        
-        // Горячие клавиши
-        document.addEventListener('keydown', function(e) {
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-            
-            switch(e.key) {
-                case 'ArrowLeft':
-                    const prevBtn = document.querySelector('.topic-nav__btn--prev:not(.topic-nav__btn--disabled)');
-                    if (prevBtn) prevBtn.click();
-                    break;
-                case 'ArrowRight':
-                    const nextBtn = document.querySelector('.topic-nav__btn--next:not(.topic-nav__btn--disabled)');
-                    if (nextBtn) nextBtn.click();
-                    break;
-                case 'Home':
-                    if (topicContent) {
-                        topicContent.scrollTo({ top: 0, behavior: 'smooth' });
-                    }
-                    break;
-                case 'End':
-                    if (topicContent) {
-                        topicContent.scrollTo({ top: topicContent.scrollHeight, behavior: 'smooth' });
-                    }
-                    break;
-            }
-        });
+        window.addEventListener('scroll', markAsRead);
         
         // Инициализация после загрузки
         setTimeout(() => {

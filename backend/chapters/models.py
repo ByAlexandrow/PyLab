@@ -47,7 +47,6 @@ class Topic(BaseModelMixin, OrderingMixin, models.Model):
     slug = models.SlugField(
         max_length=100,
         unique=True,
-        default='in-python',
         verbose_name='Slug'
     )
     estimated_minutes = models.PositiveIntegerField(

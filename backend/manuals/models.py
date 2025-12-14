@@ -61,7 +61,6 @@ class Manual(models.Model):
     slug = models.SlugField(
         max_length=100,
         unique=True,
-        default='python-manual',
         verbose_name='Slug'
     )
     level = models.CharField(
