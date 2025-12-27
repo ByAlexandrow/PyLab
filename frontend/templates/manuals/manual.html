@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-
 {% block title %}PyLab - {{ manual.title }}{% endblock %}
-
 {% block extra_css %}
 <style>
     /* Manual Detail Container */
@@ -41,7 +39,6 @@
         display: flex;
         align-items: flex-start;
         gap: 30px;
-        margin-bottom: 40px;
         padding: 30px;
         background: var(--color-bg-secondary);
         border: 1px solid var(--color-border-primary);
@@ -311,19 +308,8 @@
     }
 </style>
 {% endblock %}
-
 {% block content %}
 <div class="manual-detail-container">
-    <!-- Breadcrumb -->
-    <div class="breadcrumb">
-        <a href="{% url 'manuals' %}">
-            <i class="bi bi-book"></i>
-            Manuals
-        </a>
-        <span class="separator">/</span>
-        <span>{{ manual.title }}</span>
-    </div>
-
     <!-- Manual Header -->
     <div class="manual-header">
         <div class="manual-cover">
@@ -356,7 +342,7 @@
             {% if manual.tag.all %}
             <div class="manual-tags">
                 {% for tag in manual.tag.all %}
-                <a href="{% url 'manuals' %}?tag={{ tag.slug }}" class="manual-tag">
+                <a href="{% url 'manuals:manuals' %}?tag={{ tag.slug }}" class="manual-tag">
                     <i class="bi bi-tag"></i>
                     {{ tag.title }}
                 </a>
@@ -369,80 +355,17 @@
             </p>
             
             <div class="action-buttons">
-                <a href="{{ manual.manual.url }}" class="btn btn-primary" target="_blank">
+                <a href="{{ manual.manual.url }}" class="btn btn-primary" download title="Download PDF">
                     <i class="bi bi-download"></i>
                     Download PDF
                 </a>
-                <a href="{% url 'manuals' %}" class="btn btn-secondary">
+                <a href="{% url 'manuals:manuals' %}" class="btn btn-secondary">
                     <i class="bi bi-arrow-left"></i>
                     Back to Manuals
                 </a>
             </div>
         </div>
     </div>
-
-    <!-- Description Section -->
-    <div class="description-section">
-        <h3 class="section-title">
-            <i class="bi bi-info-circle"></i>
-            About This Book
-        </h3>
-        
-        <div class="description-content">
-            <p>
-                This comprehensive Python manual by {{ manual.author }} provides in-depth coverage of 
-                Python programming concepts suitable for {{ manual.get_level_display|lower }} level developers.
-            </p>
-            <p>
-                The book includes practical examples, exercises, and real-world projects to help you 
-                master Python programming effectively.
-            </p>
-            <p>
-                {% if manual.level == 'beginner' %}
-                    Perfect for those starting their Python journey. Covers basic syntax, data types, 
-                    and fundamental programming concepts.
-                {% elif manual.level == 'junior' %}
-                    Great for developers with basic Python knowledge looking to advance their skills 
-                    with functions, modules, and object-oriented programming.
-                {% elif manual.level == 'middle' %}
-                    For intermediate developers focusing on advanced topics like decorators, generators, 
-                    and design patterns.
-                {% else %}
-                    Advanced topics including metaprogramming, concurrency, performance optimization, 
-                    and complex system design.
-                {% endif %}
-            </p>
-        </div>
-    </div>
-
-    <!-- Related Manuals -->
-    {% with related_manuals=manual.tag.first.manuals.all|slice:":4" %}
-        {% if related_manuals|length > 1 %}
-        <div class="related-section">
-            <h3 class="section-title">
-                <i class="bi bi-bookmarks"></i>
-                Related Manuals
-            </h3>
-            
-            <div class="related-grid">
-                {% for related in related_manuals %}
-                    {% if related.id != manual.id %}
-                    <a href="{% url 'manual_detail' related.slug %}" class="related-card">
-                        <h4>{{ related.title }}</h4>
-                        <div class="manual-author">
-                            <i class="bi bi-person"></i>
-                            {{ related.author }}
-                        </div>
-                        <span class="manual-level level-{{ related.level }}">
-                            {{ related.get_level_display }}
-                        </span>
-                    </a>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-    {% endwith %}
 </div>
 {% endblock %}
 

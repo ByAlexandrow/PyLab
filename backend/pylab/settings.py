@@ -91,6 +91,17 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'pylab_db',
+#         'USER': 'pylab_user',
+#         'PASSWORD': 'pylab_password',
+#         'HOST': '127.0.0.1',
+#         'PORT': '5432',
+#     }
+# }
+
 # Используем локальный memory cache (для разработки)
 CACHES = {
     'default': {
