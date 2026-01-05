@@ -1,0 +1,632 @@
+{% extends "base.html" %}
+{% block title %}PyLab - Chapters{% endblock %}
+{% block content %}
+    <style>
+        /* Project Header - Simple centered version */
+        .project-header {
+            padding: 60px 0 40px;
+            text-align: center;
+        }
+
+        .project-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-text-light);
+            line-height: 1.2;
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+        }
+
+        .project-difficulty {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, 
+                rgba(126, 231, 135, 0.1) 0%, 
+                rgba(86, 211, 100, 0.08) 100%);
+            color: var(--color-accent-primary);
+            border: 1px solid rgba(126, 231, 135, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .project-description {
+            font-size: 1.1rem;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+            max-width: 700px;
+            margin: 0 auto 25px auto;
+        }
+
+        .project-tags {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .project-tag {
+            padding: 6px 14px;
+            background: rgba(88, 166, 255, 0.08);
+            color: #58a6ff;
+            border-radius: var(--radius-md);
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid rgba(88, 166, 255, 0.15);
+            transition: all 0.2s ease;
+        }
+
+        .project-tag:hover {
+            background: rgba(88, 166, 255, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 50px;
+        }
+
+        .btn-gh {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 28px;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            background: var(--color-bg-secondary);
+            color: var(--color-text-light);
+            border: 1px solid var(--color-border-primary);
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .btn-gh:hover {
+            background: rgba(126, 231, 135, 0.1);
+            border-color: var(--color-accent-primary);
+            color: var(--color-accent-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Tags moved to description area */
+        .project-tags {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .project-tag {
+            padding: 3px 8px;
+            background: rgba(88, 166, 255, 0.08);
+            color: #58a6ff;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            border: 1px solid rgba(88, 166, 255, 0.15);
+        }
+
+        /* IDE Preview - Larger and more beautiful */
+        .ide-preview {
+            background: var(--color-bg-tertiary);
+            border: 2px solid var(--color-border-primary);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            margin: 50px 0 80px 0;
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            min-height: 650px;
+            width: 100%;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .ide-preview .ide-sidebar {
+            width: 280px;
+            background: var(--color-bg-secondary);
+            border-right: 2px solid var(--color-border-primary);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .file-tree {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .file, .folder {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--color-text-secondary);
+            font-size: 0.95rem;
+            min-height: 50px;
+            border: 1px solid transparent;
+            font-weight: 500;
+        }
+
+        .file:hover, .folder:hover {
+            background: var(--color-bg-hover);
+            transform: translateX(5px);
+            border-color: rgba(126, 231, 135, 0.2);
+        }
+
+        .file.active, .folder.active {
+            background: linear-gradient(135deg, rgba(126, 231, 135, 0.15), rgba(86, 211, 100, 0.1));
+            color: var(--color-accent-primary);
+            border: 1px solid rgba(126, 231, 135, 0.3);
+            transform: translateX(5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .file i, .folder i {
+            font-size: 1.1rem;
+            width: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .file.active i, .folder.active i {
+            color: var(--color-accent-primary);
+            transform: scale(1.1);
+        }
+
+        .folder .bi-folder {
+            color: #58a6ff;
+        }
+
+        .folder.active .bi-folder {
+            color: var(--color-accent-primary);
+        }
+
+        .ide-editor {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            background: linear-gradient(135deg, 
+                var(--color-bg-tertiary) 0%, 
+                rgba(22, 27, 34, 0.3) 100%);
+        }
+
+        .editor-header {
+            background: var(--color-bg-secondary);
+            padding: 18px 30px;
+            border-bottom: 2px solid var(--color-border-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .editor-header span {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--color-text-light);
+            font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-run {
+            background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+            color: var(--color-bg-primary);
+            border: none;
+            padding: 10px 24px;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-run:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            gap: 15px;
+        }
+
+        .editor-content {
+            flex: 1;
+            padding: 35px;
+            overflow-x: auto;
+            background: transparent;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .editor-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(126, 231, 135, 0.02) 0%, 
+                rgba(86, 211, 100, 0.01) 100%);
+            pointer-events: none;
+        }
+
+        .file-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .file-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .editor-content pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: var(--color-text-primary);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .editor-content code {
+            color: var(--color-text-primary);
+            font-size: 1.05rem;
+            font-weight: 500;
+        }
+
+        /* Syntax highlighting */
+        .editor-content .keyword {
+            color: #ff7b72;
+            font-weight: 600;
+        }
+
+        .editor-content .string {
+            color: #a5d6ff;
+        }
+
+        .editor-content .comment {
+            color: #8b949e;
+            font-style: italic;
+        }
+
+        .editor-content .function {
+            color: #d2a8ff;
+        }
+
+        .editor-content .number {
+            color: #79c0ff;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .ide-preview {
+                min-height: 500px;
+                margin: 30px 0 50px 0;
+            }
+            
+            .ide-preview .ide-sidebar {
+                width: 220px;
+                padding: 20px;
+            }
+            
+            .file, .folder {
+                padding: 12px 16px;
+                font-size: 0.9rem;
+            }
+            
+            .editor-content {
+                padding: 25px;
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .project-header {
+                padding: 40px 0 30px;
+            }
+            
+            .project-title {
+                font-size: 2rem;
+                padding: 0 20px;
+            }
+            
+            .project-description {
+                font-size: 1rem;
+                padding: 0 20px;
+            }
+            
+            .project-tags {
+                padding: 0 20px;
+                gap: 8px;
+            }
+            
+            .project-actions {
+                padding: 0 20px;
+            }
+            
+            .btn-gh {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .ide-preview {
+                flex-direction: column;
+                margin: 20px 0 40px 0;
+                min-height: 700px;
+            }
+            
+            .ide-preview .ide-sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 2px solid var(--color-border-primary);
+                padding: 20px;
+            }
+            
+            .file-tree {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .file, .folder {
+                min-width: 120px;
+                justify-content: center;
+            }
+            
+            .file:hover, .folder:hover,
+            .file.active, .folder.active {
+                transform: translateY(-2px);
+            }
+            
+            .editor-header {
+                padding: 15px 20px;
+            }
+            
+            .editor-content {
+                padding: 20px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .file, .folder {
+                min-width: 100px;
+                padding: 10px;
+                font-size: 0.85rem;
+            }
+            
+            .editor-header span {
+                font-size: 0.9rem;
+            }
+            
+            .btn-run {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .project-title {
+                font-size: 1.8rem;
+            }
+            
+            .project-difficulty {
+                font-size: 0.85rem;
+                padding: 6px 16px;
+            }
+            
+            .project-tag {
+                font-size: 0.8rem;
+                padding: 5px 12px;
+            }
+        }
+    </style>
+
+    <!-- Project Header -->
+    <header class="project-header">
+        <div class="container">
+            <h1 class="project-title">Калькулятор статистики данных</h1>
+            
+            <div class="project-difficulty">
+                <i class="bi bi-star-fill"></i>
+                Средний уровень
+            </div>
+            
+            <!-- <p class="project-description">
+                Создайте программу для анализа данных, которая считывает информацию из CSV-файлов,
+                вычисляет статистические показатели и генерирует отчеты. Проект охватывает работу
+                с файлами, обработку исключений и модульное тестирование.
+            </p> -->
+            
+            <div class="project-tags">
+                <span class="project-tag">Функции</span>
+                <span class="project-tag">ООП</span>
+                <span class="project-tag">Тестирование</span>
+                <span class="project-tag">Файлы</span>
+                <span class="project-tag">CSV</span>
+                <span class="project-tag">Статистика</span>
+            </div>
+            
+            <!-- <div class="project-actions">
+                <button class="btn-gh" id="github-btn">
+                    <i class="bi bi-github"></i>
+                    Репозиторий GitHub
+                </button>
+            </div> -->
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- IDE Preview - Larger and more beautiful -->
+        <section class="ide-preview">
+            <div class="ide-sidebar">
+                <div class="file-tree">
+                    <div class="file" data-file="venv">
+                        <i class="bi bi-file-earmark-code"></i>
+                        .venv
+                    </div>
+                    <div class="file" data-file="main">
+                        <i class="bi bi-file-earmark-code"></i>
+                        main.py
+                    </div>
+                    <div class="folder" data-file="utils">
+                        <i class="bi bi-folder"></i>
+                        utils.py
+                    </div>
+                    <div class="file" data-file="requirements">
+                        <i class="bi bi-file-earmark-text"></i>
+                        requirements.txt
+                    </div>
+                    <div class="file active" data-file="readme">
+                        <i class="bi bi-file-earmark-code"></i>
+                        README.md
+                    </div>
+                    <div class="file" data-file="done">
+                        <i class="bi bi-file-earmark-code"></i>
+                        done.py
+                    </div>
+                </div>
+            </div>
+            <div class="ide-editor">
+                <div class="editor-header">
+                    <span id="current-file-title">README.md - Документация проекта</span>
+                    <button class="btn-run">
+                        <i class="bi bi-github"></i> Репозиторий GitHub
+                    </button>
+                </div>
+                <div class="editor-content">
+                    <!-- .venv Content -->
+                    <div class="file-content active" id="venv-content">
+                        <pre><code><span class="comment">"""Активация виртуального окружения."""</span></code></pre>
+                    </div>
+
+                    <!-- main.py Content -->
+                    <div class="file-content" id="main-content">
+                        <pre><code><span class="comment">"""Основной файл программы."""</span>
+<span class="keyword">import</span> csv
+                        </code></pre>
+                    </div>
+
+                    <!-- utils.py Content -->
+                    <div class="file-content" id="utils-content">
+                        <pre><code><span class="comment">"""Вспомогательные функции для проекта."""</span>
+<br>
+<span class="comment"># Если какие-то функции<span class="keyword"> используются</span> в</span>
+<span class="comment"># <span class="keyword">нескольких</span> файлах, разумнее всего -</span>
+<span class="comment"># вынести их в<span class="keyword"> общий модуль.</span> (utils)</span>
+<br>
+<span class="comment"># Если таких функций<span class="keyword"> несколько,</span> и</span>
+<span class="comment"># они<span class="keyword"> различаются по целям</span> (вычисление, отправка/обработка) -</span>
+<span class="comment"># создайте<span class="keyword"> один общий фолдер</span> с несколькими файлами.</span>
+                        </code></pre>
+                    </div>
+
+                    <!-- requirements.txt Content -->
+                    <div class="file-content" id="requirements-content">
+                        <pre><code><span class="comment">"""Зависимости проекта."""</span>
+                    </div>
+
+                    <!-- README.md Content -->
+                    <div class="file-content" id="readme-content">
+                        <pre><code><span class="comment">"""Описание проекта."""</span>
+                    </div>
+
+                    <!-- done.py Content -->
+                    <div class="file-content" id="done-content">
+                        <pre><code><span class="comment">"""Завершение проекта - проверка выполнения."""</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // IDE File Navigation
+            const fileElements = document.querySelectorAll('.file-tree .file, .file-tree .folder');
+            const fileContents = document.querySelectorAll('.file-content');
+            const currentFileTitle = document.getElementById('current-file-title');
+            
+            // File content mapping
+            const fileTitles = {
+                'venv': '.venv - Виртуальное окружение',
+                'main': 'main.py - Основной файл программы',
+                'utils': 'utils.py - Вспомогательные функции',
+                'requirements': 'requirements.txt - Зависимости проекта',
+                'readme': 'README.md - Документация проекта',
+                'done': 'done.py - Завершение проекта'
+            };
+            
+            // Initialize first file as active
+            showFile('readme');
+            
+            // Add click handlers to all file/folder elements
+            fileElements.forEach(element => {
+                element.addEventListener('click', function() {
+                    const fileName = this.getAttribute('data-file');
+                    
+                    // Update active state
+                    fileElements.forEach(el => el.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding file content
+                    showFile(fileName);
+                });
+            });
+            
+            function showFile(fileName) {
+                // Hide all file contents
+                fileContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Show selected file content
+                const contentElement = document.getElementById(fileName + '-content');
+                if (contentElement) {
+                    contentElement.classList.add('active');
+                    currentFileTitle.textContent = fileTitles[fileName] || fileName;
+                }
+            }
+            
+            // GitHub button
+            document.querySelector('.btn-run').addEventListener('click', function() {
+                window.open('https://github.com/pylab/project-statistics-calculator', '_blank');
+            });
+        });
+    </script>
+{% endblock %}
